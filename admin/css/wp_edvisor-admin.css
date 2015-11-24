@@ -1,0 +1,199 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ */
+
+
+.edvisor-text {
+	margin: 10px 0 20px;
+}
+
+.edvisor-info {
+	color: #82878c
+}
+
+.edvisor-non-form-label {
+	display: inline-block;
+	width: 100px;
+}
+
+.edvisor-headers {
+	color: #888888;
+	margin: 10px 0;
+}
+
+.edvisor-headers span:nth-child(1) {
+	display: inline-block;
+	width: 225px;
+}
+
+.edvisor-headers span:nth-child(2) {
+	display: inline-block;
+	width: 275px;
+}
+
+.edvisor-headers span:nth-child(3) {
+	display: inline-block;
+	width: 100px;
+}
+
+.edvisor-row {
+	margin-bottom:5px;
+}
+
+.edvisor-field .edvisor-title {
+	display: inline-block;
+	min-width: 200px;
+}
+
+.edvisor-label {
+	display: none;
+	margin-right: 25px;
+}
+
+.edvisor-required {
+	display: none !important;
+	margin-right: 84px !important;
+}
+
+.edvisor-manual,
+.edvisor-manual-text {
+	display: none !important;
+}
+
+.edvisor-select {
+	display: none;
+}
+
+.edvisor-manual-text {
+	margin-right: 5px;
+}
+
+.edvisor-checked:checked ~ .edvisor-label,
+.edvisor-checked:checked ~ .edvisor-required,
+.edvisor-checked:checked ~ .edvisor-manual,
+.edvisor-checked:checked ~ .edvisor-manual-text,
+.edvisor-checked:checked ~ .edvisor-select,
+.edvisor-checked:checked ~ .edvisor-other-input {
+	display: inline-block !important;
+}
+
+.edvisor-options {
+	display: none;
+}
+
+.edvisor-checked:checked ~ .edvisor-manual:checked ~ .edvisor-dropdown {
+	display: inline-block;
+}
+
+.edvisor-dropdown {
+	display: none;
+	margin-top: 5px;
+	margin-left: 227px;
+}
+
+.edvisor-dropdown-input {
+	width: 220px;
+}
+
+.edvisor-delete {
+	border-radius: 50%;
+	background: #fff;
+	color: red;
+	font-weight: bold;
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	text-align: center;
+	margin-left: 5px;
+	font-size: 12px;
+	cursor: pointer;
+}
+
+.edvisor-add {
+	color: #00a0d2;
+	display: inline-block;
+	margin-top: 5px;
+	cursor: pointer;
+}
+
+.edvisor-cus-headers {
+	color: #888888;
+	margin: 10px 0;
+}
+
+.edvisor-cus-col-1,
+.edvisor-cus-col-2,
+.edvisor-cus-col-3,
+.edvisor-cus-col-4,
+.edvisor-cus-col-5 {
+	display: inline-block;
+}
+
+.edvisor-cus-col-1 {
+	width: 225px;
+}
+
+.edvisor-cus-col-2,
+.edvisor-cus-col-3 {
+	width: 260px;
+}
+
+.edvisor-cus-col-4 {
+	width: 100px;
+}
+
+.edvisor-custom-dropdown {
+	margin-left: 228px;
+}
+
+.edvisor-item input {
+	width: 220px;
+}
+
+.edvisor-custom-dropdown {
+	display: none;
+}
+
+.edvisor-custom .edvisor-row {
+  margin-bottom: 20px;
+  border-bottom: 1px solid #fff;
+  padding-bottom: 20px;
+}
+
+.edvisor-custom-button {
+  color: #00a0d2;
+  display: inline-block;
+  cursor: pointer;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.edvisor-container .submit {
+	text-align: center;
+}
+
+.edvisor-other-input {
+	display: none;
+	width: 100px;
+}
+
+.e-css {
+	width: 60%;
+	height: 200px;
+}
+
+#wp_edvisor-success_message,
+#wp_edvisor-success_url {
+	display: none;
+}
+
+.e-js {
+	display: inline-block;
+	width: 49%;
+}
+
+.e-js textarea {
+	height: 200px;
+	width: 100%;
+}
