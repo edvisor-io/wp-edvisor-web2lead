@@ -8,11 +8,11 @@
 
 
 ###How to use
-1. **Add Agency ID and API Key then hit 'Save All Changes'.**
-2. Check any options you want included in your form.
+1. **First add an Agency ID and an API Key then hit 'Save All Changes'.**
+2. Check any options you want included in your form, and save again.
 3. Include the short code [edvisor_form] into your post/page/widget.
 
-### Addition Options
+### Additional Options
 ####How to make a field required
 1. Check the checkbox under the required column.
 
