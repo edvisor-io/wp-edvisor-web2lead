@@ -40,7 +40,7 @@
 		jQuery('[e=google]').autocomplete({
 	    source: function( request, response ) {
 	      jQuery.ajax({
-	        url: "http://app.edvisor.io/api/v1/google-place/search?public_key=" + formValues.apiKey,
+	        url: "https://app.edvisor.io/api/v1/google-place/search?public_key=" + formValues.apiKey,
 	        type: 'GET',
 	        data: {
 	          query: request.term
@@ -205,7 +205,7 @@
 
 		  // Post Data to Edvisor API
 			jQuery.ajax({
-				url: 'http://app.edvisor.io/api/v1/student?public_key=' + formValues.apiKey,
+				url: 'https://app.edvisor.io/api/v1/student?public_key=' + formValues.apiKey,
 				data: JSON.stringify(data),
 				type:'PUT',
 				contentType: "application/json; charset=utf-8",
