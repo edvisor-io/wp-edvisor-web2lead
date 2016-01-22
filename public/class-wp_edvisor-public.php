@@ -471,7 +471,7 @@ class Wp_edvisor_Public {
 		 */
 
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/wp_edvisor-public.css', array(), $this->version, 'all' );
-		wp_add_inline_style($this->plugin_name, get_option($this->plugin_name)['css']);
+		wp_add_inline_style($this->plugin_name, $this->wp_edvisor_options['css']);
 	}
 
 	/**
