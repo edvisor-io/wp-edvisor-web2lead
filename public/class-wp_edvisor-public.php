@@ -315,7 +315,7 @@ class Wp_edvisor_Public {
 		$markup = '<form id="edvisor-form">';
 		foreach ( $this->wp_edvisor_options as $field => $label ) {
 
-			if( !empty($label['checkbox'])) {
+			if(array_key_exists('checkbox', $label) && !empty($label['checkbox'])) {
 				if($label['required'] == "1") {
 					$markup = $markup . '<fieldset class="e-required">';
 				} else {
