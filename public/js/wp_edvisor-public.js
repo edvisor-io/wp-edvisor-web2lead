@@ -97,6 +97,9 @@
 				} else if(jQuery(this).has('select') && jQuery(this).children('select').val() === null) {
 					jQuery(this).children('label').after('<span class="edvisor-required-msg">'+ formValues.valid_required +'</span>');
 					errors += 1;
+				} else if(jQuery(this).has('textarea') && jQuery(this).children('textarea').val() === "")  {
+					jQuery(this).children('label').after('<span class="edvisor-required-msg">'+ formValues.valid_required +'</span>');
+					errors += 1;
 				}
 			});
 
