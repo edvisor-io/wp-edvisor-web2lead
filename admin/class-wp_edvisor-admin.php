@@ -103,7 +103,12 @@ class Wp_edvisor_Admin {
 
 		if ( 'settings_page_wp_edvisor' == get_current_screen() -> id ) {
 			wp_enqueue_media();
+
+      /* Adds jquery and jquery autocomplete to admin */
 			wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/wp_edvisor-admin.js', array( 'jquery', 'jquery-ui-autocomplete' ), $this->version, false );
+
+      /* Sends the php variables to the javascript file */
+      wp_localize_script($this->plugin_name, 'php_vars', get_option($this->plugin_name));
 		}
 		
 
@@ -147,7 +152,7 @@ class Wp_edvisor_Admin {
 	 */
 	 
 	public function display_plugin_setup_page() {
-	    include_once( 'partials/wp_edvisor-admin-display.php' );
+    include_once( 'partials/wp_edvisor-admin-display.php' );
 	}
 
 
@@ -155,7 +160,8 @@ class Wp_edvisor_Admin {
     register_setting($this->plugin_name, $this->plugin_name, array($this, 'validate'));
  	}
 
-	public function validate($input) {       
+	public function validate($input) {
+
     $valid = array();
 
     /* Agency ID & API KEY */
@@ -168,144 +174,232 @@ class Wp_edvisor_Admin {
 	    	add_settings_error( 'API Key','2','Please Enter an API Key' );
 	    }
 
-    /* First Name */
-    $valid['firstname']['checkbox'] = (isset($input['firstname_checkbox']) && !empty($input['firstname_checkbox'])) ? 1 : 0;
-    $valid['firstname']['required'] = (isset($input['firstname_required']) && !empty($input['firstname_required'])) ? 1 : 0;
-    $valid['firstname']['label'] = (isset($input['firstname_label']) && !empty($input['firstname_label'])) ? sanitize_text_field($input['firstname_label']) : '';
-    
-    /* Last Name */
-    $valid['lastname']['checkbox'] = (isset($input['lastname_checkbox']) && !empty($input['lastname_checkbox'])) ? 1: 0;
-    $valid['lastname']['required'] = (isset($input['lastname_required']) && !empty($input['lastname_required'])) ? 1: 0;
-    $valid['lastname']['label'] = (isset($input['lastname_label']) && !empty($input['lastname_label'])) ? sanitize_text_field($input['lastname_label']) : '';
-    
-    /* Email */
-    $valid['email']['checkbox'] = (isset($input['email_checkbox']) && !empty($input['email_checkbox'])) ? 1 : 0;
-    $valid['email']['required'] = (isset($input['email_required']) && !empty($input['email_required'])) ? 1 : 0;
-    $valid['email']['label'] = (isset($input['email_label']) && !empty($input['email_label'])) ? sanitize_text_field($input['email_label']) : '';
+    $fieldArr = array(
+      'firstname', 'lastname', 'email', 'phone', 'gender', 'birthdate', 'address', 'currentLocationGooglePlaceId', 'postalCode', 'nationalityId',
+      'passportNumber', 'studentLocationPreferences', 'studentSchoolPreferences', 'studentCoursePreferences', 'startDay', 'startMonth', 'startYear',
+      'durationWeekAmount', 'accommodation', 'hoursPerWeek', 'amOrPm', 'budget', 'notes'
+    );
 
-    /* Phone Number */
-    $valid['phone']['checkbox'] = (isset($input['phone_checkbox']) && !empty($input['phone_checkbox'])) ? 1 : 0;
-    $valid['phone']['required'] = (isset($input['phone_required']) && !empty($input['phone_required'])) ? 1 : 0;
-    $valid['phone']['label'] = (isset($input['phone_label']) && !empty($input['phone_label'])) ? sanitize_text_field($input['phone_label']) : '';
+    for ($i = 0; $i < count($fieldArr); $i++) {
+      $valid[$fieldArr[$i]]['checkbox'] = (isset($input[$fieldArr[$i].'_checkbox']) && !empty($input[$fieldArr[$i].'_checkbox'])) ? 1 : 0;
+
+      if(!empty($input[$fieldArr[$i].'_required'])){
+        $valid[$fieldArr[$i]]['required'] = 1;
+      } else {
+        if($this->wp_edvisor_options[$fieldArr[$i]]['required']) {
+          $valid[$fieldArr[$i]]['required'] = 1;
+        } else {
+          $valid[$fieldArr[$i]]['required'] = 0;
+        };
+      };
+
+      if(!empty($input[$fieldArr[$i].'_label'])){
+        $valid[$fieldArr[$i]]['label'] = sanitize_text_field($input[$fieldArr[$i].'_label']);
+      } else {
+        if($this->wp_edvisor_options[$fieldArr[$i]]['label']) {
+          $valid[$fieldArr[$i]]['label'] = $this->wp_edvisor_options[$fieldArr[$i]]['label'];
+        } else {
+          $valid[$fieldArr[$i]]['label'] = "";
+        };
+      };
+
+      $valid[$fieldArr[$i]]['order'] = (isset($input[$fieldArr[$i].'_order']) && !empty($input[$fieldArr[$i].'_order']) && is_numeric($input[$fieldArr[$i].'_order'])) ? sanitize_text_field($input[$fieldArr[$i].'_order']) : 0;
+    };
     
+    
+    // Constants
+    $valid['firstname']['required'] = 1;
+    $valid['firstname']['checkbox'] = 1;
+    $valid['firstname']['name'] = 'First Name';
+    $valid['lastname']['name'] = 'Last Name';
+    $valid['email']['name'] = 'Email';
+    $valid['phone']['name'] = 'Phone';
+    $valid['gender']['name'] = 'Gender';
+    $valid['birthdate']['name'] = 'Birthdate';
+    $valid['address']['name'] = 'Address';
+    $valid['currentLocationGooglePlaceId']['name'] = 'City, Province/Region';
+    $valid['postalCode']['name'] = 'Postal Code/Zip Code';
+    $valid['nationalityId']['name'] = 'Nationality';
+    $valid['passportNumber']['name'] = 'Passport Number';
+    $valid['studentLocationPreferences']['name'] = 'Destinations';
+    $valid['studentSchoolPreferences']['name'] = 'Schools';
+    $valid['studentCoursePreferences']['name'] = 'Programs/Courses';
+    $valid['startDay']['name'] = 'Start Day';
+    $valid['startMonth']['name'] = 'Start Month';
+    $valid['startYear']['name'] = 'Start Year';
+    $valid['durationWeekAmount']['name'] = 'Duration';
+    $valid['accommodation']['name'] = 'Accommodation';
+    $valid['hoursPerWeek']['name'] = 'Hours Per Week';
+    $valid['amOrPm']['name'] = 'Am or Pm';
+    $valid['budget']['name'] = 'Budget';
+    $valid['notes']['name'] = 'Notes';
+
     /* Gender */
-    $valid['gender']['checkbox'] = (isset($input['gender_checkbox']) && !empty($input['gender_checkbox'])) ? 1 : 0;
-    $valid['gender']['required'] = (isset($input['gender_required']) && !empty($input['gender_required'])) ? 1 : 0;
-    $valid['gender']['label'] = (isset($input['gender_label']) && !empty($input['gender_label'])) ? sanitize_text_field($input['gender_label']) : '';
-    $valid['gender']['option']['M'] = (isset($input['gender_option_m']) && !empty($input['gender_option_m'])) ? sanitize_text_field($input['gender_option_m']) : '';
-    $valid['gender']['option']['F'] = (isset($input['gender_option_f']) && !empty($input['gender_option_f'])) ? sanitize_text_field($input['gender_option_f']) : '';
+    $valid['gender']['option']['M'] = (isset($input['M']) && !empty($input['M'])) ? sanitize_text_field($input['M']) : 'Male';
+    $valid['gender']['option']['F'] = (isset($input['F']) && !empty($input['F'])) ? sanitize_text_field($input['F']) : 'Female';
 
-    /* Birthdate */
-    $valid['birthdate']['checkbox'] = (isset($input['birthdate_checkbox']) && !empty($input['birthdate_checkbox'])) ? 1 : 0;
-    $valid['birthdate']['required'] = (isset($input['birthdate_required']) && !empty($input['birthdate_required'])) ? 1 : 0;
-    $valid['birthdate']['label'] = (isset($input['birthdate_label']) && !empty($input['birthdate_label'])) ? sanitize_text_field($input['birthdate_label']) : '';
-    
-    /* Home Address */
-    $valid['address']['checkbox'] = (isset($input['address_checkbox']) && !empty($input['address_checkbox'])) ? 1 : 0;
-    $valid['address']['required'] = (isset($input['address_required']) && !empty($input['address_required'])) ? 1 : 0;
-    $valid['address']['label'] = (isset($input['address_label']) && !empty($input['address_label'])) ? sanitize_text_field($input['address_label']) : '';
-    
     /* City, Provice/Region */
-    $valid['currentLocationGooglePlaceId']['checkbox'] = (isset($input['currentLocationGooglePlaceId_checkbox']) && !empty($input['currentLocationGooglePlaceId_checkbox'])) ? 1 : 0;
-    $valid['currentLocationGooglePlaceId']['required'] = (isset($input['currentLocationGooglePlaceId_required']) && !empty($input['currentLocationGooglePlaceId_required'])) ? 1 : 0;
-    $valid['currentLocationGooglePlaceId']['label'] = (isset($input['currentLocationGooglePlaceId_label']) && !empty($input['currentLocationGooglePlaceId_label'])) ? sanitize_text_field($input['currentLocationGooglePlaceId_label']) : '';
-    $valid['currentLocationGooglePlaceId']['manual'] = (isset($input['currentLocationGooglePlaceId_manual']) && !empty($input['currentLocationGooglePlaceId_manual'])) ? sanitize_text_field($input['currentLocationGooglePlaceId_manual']) : '';
-    $valid['currentLocationGooglePlaceId']['options'] = (isset($input['currentLocationGooglePlaceId_options']) && !empty($input['currentLocationGooglePlaceId_options'])) ? $input['currentLocationGooglePlaceId_options'] : '';
-    $valid['currentLocationGooglePlaceId']['ids'] = (isset($input['currentLocationGooglePlaceId_ids']) && !empty($input['currentLocationGooglePlaceId_ids'])) ? $input['currentLocationGooglePlaceId_ids'] : '';
+    if(!empty($input['currentLocationGooglePlaceId_type'])){
+      $valid['currentLocationGooglePlaceId']['type'] = sanitize_text_field($input['currentLocationGooglePlaceId_type']);
+    } else {
+      $valid['currentLocationGooglePlaceId']['type'] = $this->wp_edvisor_options['currentLocationGooglePlaceId']['type'];
+    };
 
-    /* Postal Code */
-    $valid['postalCode']['checkbox'] = (isset($input['postalcode_checkbox']) && !empty($input['postalcode_checkbox'])) ? 1 : 0;
-    $valid['postalCode']['required'] = (isset($input['postalcode_required']) && !empty($input['postalcode_required'])) ? 1 : 0;
-    $valid['postalCode']['label'] = (isset($input['postalcode_label']) && !empty($input['postalcode_label'])) ? sanitize_text_field($input['postalcode_label']) : '';
-    
+    if(!empty($input['currentLocationGooglePlaceId_options'])){
+      $valid['currentLocationGooglePlaceId']['options'] = $input['currentLocationGooglePlaceId_options'];
+    } else {
+      if($this->wp_edvisor_options['currentLocationGooglePlaceId']['options']) {
+        $valid['currentLocationGooglePlaceId']['options'] = $this->wp_edvisor_options['currentLocationGooglePlaceId']['options'];
+      } else {
+        $valid['currentLocationGooglePlaceId']['options'] = "";
+      };
+    };
+
+    if(!empty($input['currentLocationGooglePlaceId_ids'])){
+      $valid['currentLocationGooglePlaceId']['ids'] = $input['currentLocationGooglePlaceId_ids'];
+    } else {
+      if($this->wp_edvisor_options['currentLocationGooglePlaceId']['ids']) {
+        $valid['currentLocationGooglePlaceId']['ids'] = $this->wp_edvisor_options['currentLocationGooglePlaceId']['ids'];
+      } else {
+        $valid['currentLocationGooglePlaceId']['ids'] = "";
+      };
+    };
+
     /* Nationality */
-    $valid['nationalityId']['checkbox'] = (isset($input['nationalityId_checkbox']) && !empty($input['nationalityId_checkbox'])) ? 1 : 0;
-    $valid['nationalityId']['required'] = (isset($input['nationalityId_required']) && !empty($input['nationalityId_required'])) ? 1 : 0;
-    $valid['nationalityId']['label'] = (isset($input['nationalityId_label']) && !empty($input['nationalityId_label'])) ? sanitize_text_field($input['nationalityId_label']) : '';
     $valid['nationalityId']['lang'] = (isset($input['nationalityId_lang']) && !empty($input['nationalityId_lang'])) ? sanitize_text_field($input['nationalityId_lang']) : '';
 
-    /* Passport Number */
-    $valid['passportNumber']['checkbox'] = (isset($input['passportnumber_checkbox']) && !empty($input['passportnumber_checkbox'])) ? 1 : 0;
-    $valid['passportNumber']['required'] = (isset($input['passportnumber_required']) && !empty($input['passportnumber_required'])) ? 1 : 0;
-    $valid['passportNumber']['label'] = (isset($input['passportnumber_label']) && !empty($input['passportnumber_label'])) ? sanitize_text_field($input['passportnumber_label']) : '';
-    
     /* Destinations */
-    $valid['studentLocationPreferences']['checkbox'] = (isset($input['studentLocationPreferences_checkbox']) && !empty($input['studentLocationPreferences_checkbox'])) ? 1 : 0;
-    $valid['studentLocationPreferences']['required'] = (isset($input['studentLocationPreferences_required']) && !empty($input['studentLocationPreferences_required'])) ? 1 : 0;
-    $valid['studentLocationPreferences']['label'] = (isset($input['studentLocationPreferences_label']) && !empty($input['studentLocationPreferences_label'])) ? sanitize_text_field($input['studentLocationPreferences_label']) : '';
-    $valid['studentLocationPreferences']['manual'] = (isset($input['studentLocationPreferences_manual']) && !empty($input['studentLocationPreferences_manual'])) ? sanitize_text_field($input['studentLocationPreferences_manual']) : '';
-    $valid['studentLocationPreferences']['options'] = (isset($input['studentLocationPreferences_options']) && !empty($input['studentLocationPreferences_options'])) ? $input['studentLocationPreferences_options'] : '';
-    $valid['studentLocationPreferences']['ids'] = (isset($input['studentLocationPreferences_ids']) && !empty($input['studentLocationPreferences_ids'])) ? $input['studentLocationPreferences_ids'] : '';
+    if(!empty($input['studentLocationPreferences_type'])){
+      $valid['studentLocationPreferences']['type'] = sanitize_text_field($input['studentLocationPreferences_type']);
+    } else {
+      $valid['studentLocationPreferences']['type'] = $this->wp_edvisor_options['studentLocationPreferences']['type'];
+    };
+
+    if(!empty($input['studentLocationPreferences_options'])){
+      $valid['studentLocationPreferences']['options'] = $input['studentLocationPreferences_options'];
+    } else {
+      if($this->wp_edvisor_options['studentLocationPreferences']['options']) {
+        $valid['studentLocationPreferences']['options'] = $this->wp_edvisor_options['studentLocationPreferences']['options'];
+      } else {
+        $valid['studentLocationPreferences']['options'] = "";
+      };
+    };
+
+    if(!empty($input['studentLocationPreferences_ids'])){
+      $valid['studentLocationPreferences']['ids'] = $input['studentLocationPreferences_ids'];
+    } else {
+      if($this->wp_edvisor_options['studentLocationPreferences']['ids']) {
+        $valid['studentLocationPreferences']['ids'] = $this->wp_edvisor_options['studentLocationPreferences']['ids'];
+      } else {
+        $valid['studentLocationPreferences']['ids'] = "";
+      };
+    };
 
     /* Schools */
-    $valid['studentSchoolPreferences']['checkbox'] = (isset($input['studentSchoolPreferences_checkbox']) && !empty($input['studentSchoolPreferences_checkbox'])) ? 1 : 0;
-    $valid['studentSchoolPreferences']['required'] = (isset($input['studentSchoolPreferences_required']) && !empty($input['studentSchoolPreferences_required'])) ? 1 : 0;
-    $valid['studentSchoolPreferences']['label'] = (isset($input['studentSchoolPreferences_label']) && !empty($input['studentSchoolPreferences_label'])) ? sanitize_text_field($input['studentSchoolPreferences_label']) : '';
-    $valid['studentSchoolPreferences']['manual'] = (isset($input['studentSchoolPreferences_manual']) && !empty($input['studentSchoolPreferences_manual'])) ? sanitize_text_field($input['studentSchoolPreferences_manual']) : '';
-    $valid['studentSchoolPreferences']['options'] = (isset($input['studentSchoolPreferences_options']) && !empty($input['studentSchoolPreferences_options'])) ? $input['studentSchoolPreferences_options'] : '';
+    if(!empty($input['studentSchoolPreferences_type'])){
+      $valid['studentSchoolPreferences']['type'] = sanitize_text_field($input['studentSchoolPreferences_type']);
+    } else {
+      $valid['studentSchoolPreferences']['type'] = $this->wp_edvisor_options['studentSchoolPreferences']['type'];
+    };
+
+    if(!empty($input['studentSchoolPreferences_options'])){
+      $valid['studentSchoolPreferences']['options'] = $input['studentSchoolPreferences_options'];
+    } else {
+      if($this->wp_edvisor_options['studentSchoolPreferences']['options']) {
+        $valid['studentSchoolPreferences']['options'] = $this->wp_edvisor_options['studentSchoolPreferences']['options'];
+      } else {
+        $valid['studentSchoolPreferences']['options'] = "";
+      };
+    };
 
     /* Courses */
-    $valid['studentCoursePreferences']['checkbox'] = (isset($input['studentCoursePreferences_checkbox']) && !empty($input['studentCoursePreferences_checkbox'])) ? 1 : 0;
-    $valid['studentCoursePreferences']['required'] = (isset($input['studentCoursePreferences_required']) && !empty($input['studentCoursePreferences_required'])) ? 1 : 0;
-    $valid['studentCoursePreferences']['label'] = (isset($input['studentCoursePreferences_label']) && !empty($input['studentCoursePreferences_label'])) ? sanitize_text_field($input['studentCoursePreferences_label']) : '';
-    $valid['studentCoursePreferences']['manual'] = (isset($input['studentCoursePreferences_manual']) && !empty($input['studentCoursePreferences_manual'])) ? sanitize_text_field($input['studentCoursePreferences_manual']) : '';
-    $valid['studentCoursePreferences']['options'] = (isset($input['studentCoursePreferences_options']) && !empty($input['studentCoursePreferences_options'])) ? $input['studentCoursePreferences_options'] : '';
+    if(!empty($input['studentCoursePreferences_type'])){
+      $valid['studentCoursePreferences']['type'] = sanitize_text_field($input['studentCoursePreferences_type']);
+    } else {
+      $valid['studentCoursePreferences']['type'] = $this->wp_edvisor_options['studentCoursePreferences']['type'];
+    };
 
-    /* Start Day */
-    $valid['startDay']['checkbox'] = (isset($input['startDay_checkbox']) && !empty($input['startDay_checkbox'])) ? 1 : 0;
-    $valid['startDay']['required'] = (isset($input['startDay_required']) && !empty($input['startDay_required'])) ? 1 : 0;
-    $valid['startDay']['label'] = (isset($input['startDay_label']) && !empty($input['startDay_label'])) ? sanitize_text_field($input['startDay_label']) : '';
-    
-    /* Start Month */
-    $valid['startMonth']['checkbox'] = (isset($input['startMonth_checkbox']) && !empty($input['startMonth_checkbox'])) ? 1 : 0;
-    $valid['startMonth']['required'] = (isset($input['startMonth_required']) && !empty($input['startMonth_required'])) ? 1 : 0;
-    $valid['startMonth']['label'] = (isset($input['startMonth_label']) && !empty($input['startMonth_label'])) ? sanitize_text_field($input['startMonth_label']) : '';
-
-    /* Start Year */
-    $valid['startYear']['checkbox'] = (isset($input['startYear_checkbox']) && !empty($input['startYear_checkbox'])) ? 1 : 0;
-    $valid['startYear']['required'] = (isset($input['startYear_required']) && !empty($input['startYear_required'])) ? 1 : 0;
-    $valid['startYear']['label'] = (isset($input['startYear_label']) && !empty($input['startYear_label'])) ? sanitize_text_field($input['startYear_label']) : '';
-
-    /* Duration */
-    $valid['durationWeekAmount']['checkbox'] = (isset($input['durationWeekAmount_checkbox']) && !empty($input['durationWeekAmount_checkbox'])) ? 1 : 0;
-    $valid['durationWeekAmount']['required'] = (isset($input['durationWeekAmount_required']) && !empty($input['durationWeekAmount_required'])) ? 1 : 0;
-    $valid['durationWeekAmount']['label'] = (isset($input['durationWeekAmount_label']) && !empty($input['durationWeekAmount_label'])) ? sanitize_text_field($input['durationWeekAmount_label']) : '';
-
-    /* Accommodations */
-    $valid['accommodation']['checkbox'] = (isset($input['accommodation_checkbox']) && !empty($input['accommodation_checkbox'])) ? 1 : 0;
-    $valid['accommodation']['required'] = (isset($input['accommodation_required']) && !empty($input['accommodation_required'])) ? 1 : 0;
-    $valid['accommodation']['label'] = (isset($input['accommodation_label']) && !empty($input['accommodation_label'])) ? sanitize_text_field($input['accommodation_label']) : '';
-    
-    /* Hours Per Week */
-    $valid['hoursPerWeek']['checkbox'] = (isset($input['hoursperweek_checkbox']) && !empty($input['hoursperweek_checkbox'])) ? 1 : 0;
-    $valid['hoursPerWeek']['required'] = (isset($input['hoursperweek_required']) && !empty($input['hoursperweek_required'])) ? 1 : 0;
-    $valid['hoursPerWeek']['label'] = (isset($input['hoursperweek_label']) && !empty($input['hoursperweek_label'])) ? sanitize_text_field($input['hoursperweek_label']) : '';
+    if(!empty($input['studentCoursePreferences_options'])){
+      $valid['studentCoursePreferences']['options'] = $input['studentCoursePreferences_options'];
+    } else {
+      if($this->wp_edvisor_options['studentCoursePreferences']['options']) {
+        $valid['studentCoursePreferences']['options'] = $this->wp_edvisor_options['studentCoursePreferences']['options'];
+      } else {
+        $valid['studentCoursePreferences']['options'] = "";
+      };
+    };
     
     /* AM or PM */
-    $valid['amOrPm']['checkbox'] = (isset($input['amOrPm_checkbox']) && !empty($input['amOrPm_checkbox'])) ? 1 : 0;
-    $valid['amOrPm']['required'] = (isset($input['amOrPm_required']) && !empty($input['amOrPm_required'])) ? 1 : 0;
-    $valid['amOrPm']['label'] = (isset($input['amOrPm_label']) && !empty($input['amOrPm_label'])) ? sanitize_text_field($input['amOrPm_label']) : '';
-    $valid['amOrPm']['option']['am'] = (isset($input['amOrPm_option_am']) && !empty($input['amOrPm_option_am'])) ? sanitize_text_field($input['amOrPm_option_am']) : '';
-    $valid['amOrPm']['option']['pm'] = (isset($input['amOrPm_option_pm']) && !empty($input['amOrPm_option_pm'])) ? sanitize_text_field($input['amOrPm_option_pm']) : '';
-
-    /* Budget */
-    $valid['budget']['checkbox'] = (isset($input['budget_checkbox']) && !empty($input['budget_checkbox'])) ? 1 : 0;
-    $valid['budget']['required'] = (isset($input['budget_required']) && !empty($input['budget_required'])) ? 1 : 0;
-    $valid['budget']['label'] = (isset($input['budget_label']) && !empty($input['budget_label'])) ? sanitize_text_field($input['budget_label']) : '';
+    $valid['amOrPm']['option']['am'] = (isset($input['amOrPm_option_am']) && !empty($input['amOrPm_option_am'])) ? sanitize_text_field($input['amOrPm_option_am']) : 'AM';
+    $valid['amOrPm']['option']['pm'] = (isset($input['amOrPm_option_pm']) && !empty($input['amOrPm_option_pm'])) ? sanitize_text_field($input['amOrPm_option_pm']) : 'PM';
     
-    /* Notes */
-    $valid['notes']['checkbox'] = (isset($input['notes_checkbox']) && !empty($input['notes_checkbox'])) ? 1 : 0;
-    $valid['notes']['required'] = (isset($input['notes_required']) && !empty($input['notes_required'])) ? 1 : 0;
-    $valid['notes']['label'] = (isset($input['notes_label']) && !empty($input['notes_label'])) ? sanitize_text_field($input['notes_label']) : '';
-
     /* Custom Fields */
     if(!empty($input['customPropertyValues'])) {
+
 	    foreach($input['customPropertyValues'] as $item => $unit ){
-				$valid['customPropertyValues'][$item]['type'] = (isset($input['customPropertyValues'][$item]['type']) && !empty($input['customPropertyValues'][$item]['type'])) ? sanitize_text_field($input['customPropertyValues'][$item]['type']) : '';
-				$valid['customPropertyValues'][$item]['label'] = (isset($input['customPropertyValues'][$item]['label']) && !empty($input['customPropertyValues'][$item]['label'])) ? sanitize_text_field($input['customPropertyValues'][$item]['label']) : '';
-				$valid['customPropertyValues'][$item]['id'] = (isset($input['customPropertyValues'][$item]['id']) && !empty($input['customPropertyValues'][$item]['id'])) ? sanitize_text_field($input['customPropertyValues'][$item]['id']) : '';
-				$valid['customPropertyValues'][$item]['required'] = (isset($input['customPropertyValues'][$item]['required']) && !empty($input['customPropertyValues'][$item]['required'])) ? $input['customPropertyValues'][$item]['required'] : '';
-				$valid['customPropertyValues'][$item]['options'] = (isset($input['customPropertyValues'][$item]['options']) && !empty($input['customPropertyValues'][$item]['options'])) ? $input['customPropertyValues'][$item]['options'] : '';
+
+        if(!empty($input['customPropertyValues'][$item]['type'])){
+          $type = $input['customPropertyValues'][$item]['type'];
+        } else {
+          if(isset($this->wp_edvisor_options['customPropertyValues'][$item]['type'])) {
+            $type = $this->wp_edvisor_options['customPropertyValues'][$item]['type'];
+          } else {
+            $type = "Text";
+          };
+        };
+
+        if(!empty($input['customPropertyValues'][$item]['label'])){
+          $label = sanitize_text_field($input['customPropertyValues'][$item]['label']);
+        } else {
+          if(isset($this->wp_edvisor_options['customPropertyValues'][$item]['label'])) {
+            $label = $this->wp_edvisor_options['customPropertyValues'][$item]['label'];
+          } else {
+            $label = "";
+          };
+        };
+
+        if(!empty($input['customPropertyValues'][$item]['id'])){
+          $id = sanitize_text_field($input['customPropertyValues'][$item]['id']);
+        } else {
+          if(isset($this->wp_edvisor_options['customPropertyValues'][$item]['id'])) {
+            $id = $this->wp_edvisor_options['customPropertyValues'][$item]['id'];
+          } else {
+            $id = "";
+          };
+        };
+
+        if(!empty($input['customPropertyValues'][$item]['required'])){
+          $required = 1;
+        } else {
+          if(isset($this->wp_edvisor_options['customPropertyValues'][$item]['required'])) {
+            $required = 1;
+          } else {
+            $required = 0;
+          };
+        };
+
+        if(!empty($input['customPropertyValues'][$item]['options'])){
+          $options = $input['customPropertyValues'][$item]['options'];
+        } else {
+          if(isset($this->wp_edvisor_options['customPropertyValues'][$item]['options'])) {
+            $options = $this->wp_edvisor_options['customPropertyValues'][$item]['options'];
+          } else {
+            $options = "";
+          };
+        };
+
+        if(!empty($input['customPropertyValues'][$item]['order'])){
+          $order = sanitize_text_field($input['customPropertyValues'][$item]['order']);
+        } else {
+          if(isset($this->wp_edvisor_options['customPropertyValues'][$item]['order'])) {
+            $order = $this->wp_edvisor_options['customPropertyValues'][$item]['order'];
+          } else {
+            $order = 0;
+          };
+        };
+
+        $valid['customPropertyValues'][$item] = array('type'=>$type, 'label'=>$label, 'id'=>$id, 'required'=>$required, 'options'=>$options, 'order'=>$order);
+
 	    }
     } else {
     	$valid['customPropertyValues'] = '';
@@ -318,9 +412,10 @@ class Wp_edvisor_Admin {
     $valid['success_radio'] = (isset($input['success_radio']) && !empty($input['success_radio'])) ? sanitize_text_field($input['success_radio']) : '';
     $valid['success_message'] = (isset($input['success_message']) && !empty($input['success_message'])) ? sanitize_text_field($input['success_message']) : 'message';
     $valid['success_url'] = (isset($input['success_url']) && !empty($input['success_url'])) ? sanitize_text_field($input['success_url']) : 'http://';
+    $valid['fail_message'] = (isset($input['fail_message']) && !empty($input['fail_message'])) ? sanitize_text_field($input['fail_message']) : 'message';
 
     /* css block */
-		$valid['css'] = (isset($input['css']) && !empty($input['css'])) ? sanitize_text_field($input['css']) : '';
+		$valid['css'] = (isset($input['css']) && !empty($input['css'])) ? $input['css'] : '';
 
 		/* javascript block */
 		$valid['js'] = (isset($input['js']) && !empty($input['js'])) ? $input['js'] : '';

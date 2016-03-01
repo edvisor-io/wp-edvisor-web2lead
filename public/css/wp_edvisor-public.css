@@ -118,29 +118,31 @@
   text-decoration: none;
 }
 
-
-#edvisor-form .e-required label:after {
-  content: '*';
-}
-
-#edvisor-form select {
+.edvisor-form select,
+.edvisor-form input {
   width: 100%;
+  border: 1px solid lightgray;
 }
 
-#edvisor-form fieldset {
+.edvisor-row {
   margin-bottom: 10px;
 }
 
-.edvisor-required-msg {
-  font-size: 12px;
+.edvisor-input-error {
+  border-color: red;
+}
+
+.edvisor-error-msg {
   color: red;
+  font-size: 12px;
   margin-left: 10px;
 }
 
-.edvisor-success {
-  background: #6ACC6A;
-  color: #fff;
-  margin: 10px 0;
+.edvisor-success-message {
+  background: lightgreen;
   padding: 5px;
+  margin-top: 10px;
   text-align: center;
+  width: 100%;
 }
+
