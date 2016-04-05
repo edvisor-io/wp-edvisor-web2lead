@@ -56,17 +56,29 @@ class Wp_edvisor_Public {
 
 	}
 
-	public function wp_edvisor_add_shortcode() {
+	public function wp_edvisor_add_shortcode($atts) {
 		// var_dump($this->wp_edvisor_options);
 
-		
-		// Filtering array by items selected
-		$filtered = array_filter($this->wp_edvisor_options, function($items) {
-			return !empty($items['checkbox']);
-		});
+		foreach($this->wp_edvisor_options as $num => $itemArr) {
+			if(is_numeric($num) && isset($itemArr['formName'])) {
+				if($itemArr['formName'] == $atts['name']) {
+					$selectedFormData = $itemArr;
+				};
+			};
+		};
 
-		$chosen = !empty($this->wp_edvisor_options['customPropertyValues']) ? array_merge($filtered, $this->wp_edvisor_options['customPropertyValues']) : $filtered;
 
+		if(isset($selectedFormData)) {
+			$filtered = array_filter($selectedFormData, function($items) {
+				return !empty($items['checkbox']);
+			});
+		} else {
+			var_dump('There is an error with your shortcode');
+			exit();
+		}
+
+
+		$chosen = !empty($selectedFormData['customPropertyValues']) ? array_merge($filtered, $selectedFormData['customPropertyValues']) : $filtered;
 		
 		// Sort array by order
 		function sortByOrder($a, $b) {
@@ -98,7 +110,10 @@ class Wp_edvisor_Public {
 		$addOwnFields = array("currentLocationGooglePlaceId", "studentSchoolPreferences", "studentCoursePreferences", "studentLocationPreferences");
 		$tagFields = array("currentLocationGooglePlaceId", "studentLocationPreferences");
 
-		$markup = '<form class="edvisor-form">';
+		$markup = '';
+		$markup = $markup . '<style>' . $selectedFormData['css'] . '</style>';
+		$name = str_replace(' ', '', $selectedFormData['formName']);
+		$markup = $markup . '<form class="edvisor-form" id="' . $name . '">';
 
 		foreach($chosen as $field => $label){
 			$markup = $markup . '<div class="edvisor-row">';
@@ -139,7 +154,6 @@ class Wp_edvisor_Public {
 
 			// If its a select
 			if(in_array($field, $addOwnFields, true)){
-
 				if($label['type'] == "Text") {
 					$markup = $markup . '<input type="text"';
 					if(in_array($field, $tagFields, true)) {
@@ -215,7 +229,7 @@ class Wp_edvisor_Public {
 			$markup = $markup . '</div>';
 		};
 		
-		$markup = $markup . '<button type="submit" class="edvisor-button">' . $this->wp_edvisor_options["submit"] . '</button></form>';
+		$markup = $markup . '<button type="submit" class="edvisor-button">' . $selectedFormData["submit"] . '</button></form>';
 
 		return $markup;
 	}
@@ -245,7 +259,7 @@ class Wp_edvisor_Public {
 		 */
 
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/wp_edvisor-public.css', array(), $this->version, 'all' );
-		wp_add_inline_style($this->plugin_name, $this->wp_edvisor_options['css']);
+		// wp_add_inline_style($this->plugin_name, $this->wp_edvisor_options['css']);
 	}
 
 	/**
@@ -270,8 +284,10 @@ class Wp_edvisor_Public {
     wp_register_script('edvisorjs', 'https://dxfy15tq6smtz.cloudfront.net/edvisor.js', false, '1.3.2');
     wp_enqueue_script('edvisorjs');
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/wp_edvisor-public.js', array( 'jquery', 'jquery-ui-autocomplete', 'jquery-ui-datepicker' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/wp_edvisor-public.js', array( 'jquery', 'jquery-ui-autocomplete', 'jquery-ui-datepicker'), $this->version, false );
+
 		wp_localize_script( $this->plugin_name, 'formValues' , get_option($this->plugin_name) );
+		
 	}
 
 }

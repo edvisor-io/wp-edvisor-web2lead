@@ -128,21 +128,19 @@
   margin-bottom: 10px;
 }
 
-.edvisor-input-error {
-  border-color: red;
-}
-
 .edvisor-error-msg {
   color: red;
   font-size: 12px;
-  margin-left: 10px;
+  margin-top: 5px;
+}
+
+.edvisor-input-error {
+  border-color: red !important;
 }
 
 .edvisor-success-message {
-  background: lightgreen;
-  padding: 5px;
-  margin-top: 10px;
+  background: #0FA70F;
+  color: #fff;
+  padding: 20px;
   text-align: center;
-  width: 100%;
 }
-
