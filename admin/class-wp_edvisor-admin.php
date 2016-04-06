@@ -1,6 +1,6 @@
 <?php
 
-include 'partials/wp_edvisor-admin-functions.php';
+include_once( 'partials/wp_edvisor-admin-functions.php' );
 
 /**
  * The admin-specific functionality of the plugin.
@@ -126,6 +126,7 @@ class Wp_edvisor_Admin {
 	     *        Administration Menus: http://codex.wordpress.org/Administration_Menus
 	     *
 	     */
+
 	    add_options_page( 'Edvisor Forms for WordPress', 'Edvisor Forms', 'manage_options', $this->plugin_name, array($this, 'display_plugin_setup_page')
 	    );
 	}

@@ -13,10 +13,14 @@
  */
 
 	$options = get_option($this->plugin_name);
-
+	if($options == false) {
+    $options = array(wp_edvisor_template($this->wp_edvisor_options, $input, 0), 'using' => 0, 'formNum' => 0);
+	} else {
+		$formNum = $options['formNum'];
+		$using = $options['using'];
+	};
 	// var_dump($options);
-	$formNum = $options['formNum'];
-	$using = $options['using']
+	
 ?>
 
 <!-- This file should primarily consist of HTML with a little bit of PHP. -->
