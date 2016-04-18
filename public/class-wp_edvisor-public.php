@@ -81,11 +81,11 @@ class Wp_edvisor_Public {
 		$chosen = !empty($selectedFormData['customPropertyValues']) ? array_merge($filtered, $selectedFormData['customPropertyValues']) : $filtered;
 		
 		// Sort array by order
-		function sortByOrder($a, $b) {
+		$sortByOrder = function($a, $b) {
 			return $a['order'] - $b['order'];
-		}
+		};
 
-		function edvisorData($field, $label, $type, $other='') {
+		$edvisorData = function($field, $label, $type, $other='') {
 			$markup = ' ';
 			$markup = $markup . 'data-edvisor="id-'.$field.' type-'.$type;
 			if(!empty($label['required'])) {
@@ -98,7 +98,7 @@ class Wp_edvisor_Public {
 			return $markup;
 		};
 
-		uasort($chosen, 'sortByOrder');
+		uasort($chosen, $sortByOrder);
 
 
 		// var_dump($chosen);
@@ -136,14 +136,14 @@ class Wp_edvisor_Public {
 			// If its a text area
 			if(in_array($field, $textAreas, true)){	
 				$markup = $markup . '<textarea ';
-				$markup = $markup . edvisorData($field, $label, 'text');
+				$markup = $markup . $edvisorData($field, $label, 'text');
 				$markup = $markup . '></textarea>';
 			};
 
 			// If its was a radio now select
 			if(in_array($field, $wasRadioFields, true)){
 				$markup = $markup . '<select';
-				$markup = $markup . edvisorData($field, $label, 'text');
+				$markup = $markup . $edvisorData($field, $label, 'text');
 				$markup = $markup . '>';
 				$markup = $markup . '<option value="" disabled selected hidden></option>';
 				foreach($label['option'] as $option => $item) {
@@ -157,17 +157,17 @@ class Wp_edvisor_Public {
 				if($label['type'] == "Text") {
 					$markup = $markup . '<input type="text"';
 					if(in_array($field, $tagFields, true)) {
-						$markup = $markup . edvisorData($field, $label, 'google');
+						$markup = $markup . $edvisorData($field, $label, 'google');
 					} else {
-						$markup = $markup . edvisorData($field, $label, 'tag');
+						$markup = $markup . $edvisorData($field, $label, 'tag');
 					};
 					$markup = $markup . '/>';
 				} else if($label['type'] == "Dropdown") {
 					$markup = $markup . '<select';
 					if(in_array($field, $tagFields, true)) {
-						$markup = $markup . edvisorData($field, $label, 'google');
+						$markup = $markup . $edvisorData($field, $label, 'google');
 					} else {
-						$markup = $markup . edvisorData($field, $label, 'tag');
+						$markup = $markup . $edvisorData($field, $label, 'tag');
 					};
 					$markup = $markup . '>';
 					$markup = $markup . '<option value="" disabled selected hidden></option>';
@@ -188,7 +188,7 @@ class Wp_edvisor_Public {
 			// If its a date field
 			if(in_array($field, array("birthdate"), true)){
 				$markup = $markup . '<input type="text"';
-				$markup = $markup . edvisorData($field, $label, 'text', 'calendar');
+				$markup = $markup . $edvisorData($field, $label, 'text', 'calendar');
 				$markup = $markup . '"';
 				$markup = $markup . '/>';
 			};
@@ -196,7 +196,7 @@ class Wp_edvisor_Public {
 			// If its a prepopulated select field
 			if(in_array($field, $selectFields, true)) {
 				$markup = $markup . '<select';
-				$markup = $markup . edvisorData($field, $label, 'text');
+				$markup = $markup . $edvisorData($field, $label, 'text');
 				$markup = $markup . '>';
 				$markup = $markup . '<option value="" disabled selected hidden></option>';
 				$markup = $markup . '</select>';
@@ -206,11 +206,11 @@ class Wp_edvisor_Public {
 			if(is_numeric($field)){
 				if($label['type'] == "Text") {
 					$markup = $markup . '<input type="text"';
-					$markup = $markup . edvisorData($label['id'], $label, 'custom');
+					$markup = $markup . $edvisorData($label['id'], $label, 'custom');
 					$markup = $markup . '/>';
 				} else if($label['type'] == "Dropdown"){
 					$markup = $markup . '<select';
-					$markup = $markup . edvisorData($label['id'], $label, 'custom');
+					$markup = $markup . $edvisorData($label['id'], $label, 'custom');
 					$markup = $markup . '>';
 					$markup = $markup . '<option value="" disabled selected hidden></option>';
 					foreach($label['options'] as $option => $item) {
@@ -219,7 +219,7 @@ class Wp_edvisor_Public {
 					$markup = $markup . '</select>';
 				} else if($label['type'] == "Date"){ 
 					$markup = $markup . '<input type="text"';
-					$markup = $markup . edvisorData($label['id'], $label, 'custom', 'calendar');
+					$markup = $markup . $edvisorData($label['id'], $label, 'custom', 'calendar');
 					$markup = $markup . '"';
 					$markup = $markup . '/>';
 				};
