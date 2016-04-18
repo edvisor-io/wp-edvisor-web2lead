@@ -50,15 +50,19 @@
         edvisorForm.constants.failMessage = formValues[keys[x]].fail_message;
         edvisorForm.constants.customElements = true;
         edvisorForm.methods.grabCustomData = function(data){
-          (function() {
-            'use strict';
-            return (new Function('data', 'return (' + formValues[keys[x]].jspost + ')' )(data));
-          }());
+          if(formValues[keys[x]].jspost.length) {
+            (function() {
+              'use strict';
+              return (new Function('data', 'return (' + formValues[keys[x]].jspost + ')' )(data));
+            }());
+          }
         };
 
-        (function() {
-          return (new Function( 'return (' + formValues[keys[x]].js + ')' )());
-        }());
+        if(formValues[keys[x]].js.length) {
+          (function() {
+            return (new Function( 'return (' + formValues[keys[x]].js + ')' )());
+          }());
+        };
 
         $('input[data-edvisor*=type-google]').autocomplete({
           source: function( request, response ) {
