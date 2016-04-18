@@ -208,9 +208,13 @@ class Wp_edvisor_Public {
 					$markup = $markup . '<input type="text"';
 					$markup = $markup . $edvisorData($label['id'], $label, 'custom');
 					$markup = $markup . '/>';
-				} else if($label['type'] == "Dropdown"){
+				} else if($label['type'] == "Dropdown" || $label['type'] == "Dropdown to Text"){
 					$markup = $markup . '<select';
-					$markup = $markup . $edvisorData($label['id'], $label, 'custom');
+					if($label['type'] == "Dropdown") {
+						$markup = $markup . $edvisorData($label['id'], $label, 'custom');
+					} else {
+						$markup = $markup . $edvisorData($label['id'], $label, 'custom-text');
+					}
 					$markup = $markup . '>';
 					$markup = $markup . '<option value="" disabled selected hidden></option>';
 					foreach($label['options'] as $option => $item) {

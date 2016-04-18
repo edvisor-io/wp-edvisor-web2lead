@@ -219,7 +219,7 @@
 			if(type === 'customPropertyValues') {
 				var cfId = $(this).parents('.edvisor-list_item').attr('cfId');
 
-				$(this).parents('.edvisor-item').find('.edvisor-edit-modal').append('<div class="edvisor-list_inner" name="'+type+'" cfId='+cfId+'>'
+				$(this).parents('.edvisor-item').find('.edvisor-edit-modal .edvisor-modal_body').append('<div class="edvisor-list_inner" name="'+type+'" cfId='+cfId+'>'
 					+ '<div class="edvisor-field"><label>Edvisor Field: Custom Field</label></div>'
 					+ '<div class="edvisor-item"><label class="edvisor-label">Label:</label><input name="wp_edvisor['+num3+'][customPropertyValues]['+cfId+'][label]" value="'+exists(php_vars[num3][type][cfId],"label")+'"></div>'
 					+ '<div class="edvisor-item"><label class="edvisor-label">Web2Lead ID:</label><input name="wp_edvisor['+num3+'][customPropertyValues]['+cfId+'][id]" value="'+exists(php_vars[num3][type][cfId],"id")+'"></div>'
@@ -228,6 +228,7 @@
 					+ '<option '+isCustomSelected('customPropertyValues', cfId, "Text", num3)+'>Text</option>'
 					+ '<option '+isCustomSelected('customPropertyValues', cfId, "Dropdown", num3)+'>Dropdown</option>'
 					+ '<option '+isCustomSelected('customPropertyValues', cfId, "Date", num3)+'>Date</option>'
+					+ '<option '+isCustomSelected('customPropertyValues', cfId, "Dropdown to Text", num3)+'>Dropdown to Text</option>'
 					+	'</select></div>'
 					+ '<div class="edvisor-option-container"><label>Options:</label><br/>'
 					+ '<div class="edvisor-options">'
@@ -254,7 +255,7 @@
 					+ '</div>')
 
 				// If type is dropdown
-				if(php_vars[num3]['customPropertyValues'][cfId] && php_vars[num3]['customPropertyValues'][cfId]['type']==="Dropdown") {
+				if(php_vars[num3]['customPropertyValues'][cfId] && php_vars[num3]['customPropertyValues'][cfId]['type']==="Dropdown" || php_vars[num3]['customPropertyValues'][cfId] && php_vars[num3]['customPropertyValues'][cfId]['type']==="Dropdown to Text") {
 					$(this).parents('.edvisor-item').find('.edvisor-option-container').css('display','block')
 				}
 				
@@ -345,7 +346,7 @@
 
 		// Watching for type select change
 		$('.edvisor-edit-modal').on('change', '.typeSelect', function() {
-			if($(this).val()==='Dropdown') {
+			if($(this).val()==='Dropdown' || $(this).val()==='Dropdown to Text') {
 				$('.edvisor-option-container').css('display', 'block');
 			} else {
 				$('.edvisor-option-container').css('display', 'none');
