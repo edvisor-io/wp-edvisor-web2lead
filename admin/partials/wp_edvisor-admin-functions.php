@@ -243,12 +243,12 @@ function wp_edvisor_template($options, $input, $num) {
       };
 
       if(!empty($input[$num]['customPropertyValues'][$item]['options'])){
-        $options = $input[$num]['customPropertyValues'][$item]['options'];
+        $opt = $input[$num]['customPropertyValues'][$item]['options'];
       } else {
         if(isset($options[$num]['customPropertyValues'][$item]['options'])) {
-          $options = $options[$num]['customPropertyValues'][$item]['options'];
+          $opt = $options[$num]['customPropertyValues'][$item]['options'];
         } else {
-          $options = "";
+          $opt = "";
         };
       };
 
@@ -262,7 +262,7 @@ function wp_edvisor_template($options, $input, $num) {
         };
       };
 
-      $valid['customPropertyValues'][$item] = array('type'=>$type, 'label'=>$label, 'id'=>$id, 'required'=>$required, 'options'=>$options, 'order'=>$order);
+      $valid['customPropertyValues'][$item] = array('type'=>$type, 'label'=>$label, 'id'=>$id, 'required'=>$required, 'options'=>$opt, 'order'=>$order);
 
     }
   } else {

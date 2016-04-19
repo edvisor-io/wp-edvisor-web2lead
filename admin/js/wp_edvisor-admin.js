@@ -103,7 +103,7 @@
 			var num2 = $(this).parents('.edvisor-item').attr('data-num');
 
 			if(label === 'customPropertyValues') {
-				var customFieldNum = $('.edvisor-list_item[name*="customPropertyValues"]').length;
+				var customFieldNum = $(this).parents('.edvisor-item').find('.edvisor-list_item[name*="customPropertyValues"]').length;
 
 				$(this).parents('.edvisor-item').find('.edvisor-list_body').append('<div class="edvisor-list_item" name="'+label+'" cfId="'+customFieldNum+'">'
 					+	'<div class="col-1"><input type="text" class="edvisor-list_order" name="wp_edvisor['+num2+']['+label+']['+customFieldNum+'][order]"></div>'
