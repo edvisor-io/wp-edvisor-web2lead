@@ -121,7 +121,7 @@ class Wp_edvisor_Public {
 
 			// If its a regular text field
 			if(in_array($field, $textFields, true)){	
-				$markup = $markup . '<input type="text"';
+				$markup = $markup . '<input type="text" ';
 				$markup = $markup . 'data-edvisor="id-'.$field.' type-text';
 				if(!empty($label['required'])) {
 					$markup = $markup . ' validation-required';
