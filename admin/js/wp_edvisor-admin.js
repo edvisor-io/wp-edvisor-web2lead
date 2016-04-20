@@ -106,6 +106,7 @@
 				var customFieldNum = $(this).parents('.edvisor-item').find('.edvisor-list_item[name*="customPropertyValues"]').length;
 
 				$(this).parents('.edvisor-item').find('.edvisor-list_body').append('<div class="edvisor-list_item" name="'+label+'" cfId="'+customFieldNum+'">'
+					+	'<div class="col-1"><input type="checkbox" name="wp_edvisor['+num2+']['+label+']['+customFieldNum+'][required]"></div>'
 					+	'<div class="col-1"><input type="text" class="edvisor-list_order" name="wp_edvisor['+num2+']['+label+']['+customFieldNum+'][order]"></div>'
 					+	'<div class="col-2"><span class="edvisor-list_field">'+name+'</span></div>'
 					+	'<div class="col-3"><div class="edvisor-edit"></div></div>'
@@ -114,6 +115,7 @@
 			} else {
 
 				$(this).parents('.edvisor-item').find('.edvisor-list_body').append('<div class="edvisor-list_item" name="'+label+'">'
+					+	'<div class="col-1"><input type="checkbox" name="wp_edvisor['+num2+']['+label+'_required]"></div>'
 					+	'<div class="col-1"><input type="text" class="edvisor-list_order" name="wp_edvisor['+num2+']['+label+'_order]"></div>'
 					+ '<input type="hidden" name="wp_edvisor['+num2+']['+label+'_checkbox]" value="1">'
 					+ '<input type="hidden" name="wp_edvisor['+num2+']['+label+'_label]" value=\''+php_vars[num2][label]["name"]+'\'>'
@@ -173,18 +175,14 @@
 
 					if(thereAreNumOptions){
 						for(var i = 0; i < thereAreNumOptions; i++) {
-							multiSelectTemplate += '<div class="edvisor-option"><input type="text" name="wp_edvisor['+num+']['+type+'_options][]" value="'+php_vars[num][type]["options"][i]+'">';
 							if(type === 'studentLocationPreferences' || type === 'currentLocationGooglePlaceId') {
+								multiSelectTemplate += '<div class="edvisor-option"><input class="edvisor-google-input" type="text" name="wp_edvisor['+num+']['+type+'_options][]" value="'+php_vars[num][type]["options"][i]+'">';
 								multiSelectTemplate += '<input type="hidden" name="wp_edvisor['+num+']['+type+'_ids]['+i+']" value="'+php_vars[num][type]["ids"][i]+'">'
+							} else if(type === 'studentCoursePreferences' || type === 'studentSchoolPreferences') {
+								multiSelectTemplate += '<div class="edvisor-option"><input type="text" name="wp_edvisor['+num+']['+type+'_options]['+i+'][value]" value="'+php_vars[num][type]["options"][i]["value"]+'"><input type="text" name="wp_edvisor['+num+']['+type+'_options]['+i+'][display]" value="'+php_vars[num][type]["options"][i]["display"]+'">';
 							}
 							multiSelectTemplate += '<div class="edvisor-close"></div></div>';
 						}
-					} else {
-						multiSelectTemplate += '<div class="edvisor-option"><input type="text" name="wp_edvisor['+num+']['+type+'_options][]" >';
-						if(type === 'studentLocationPreferences' || type === 'currentLocationGooglePlaceId') {
-							multiSelectTemplate += '<input type="hidden" name="wp_edvisor['+num+']['+type+'_ids][]">'
-						}
-						multiSelectTemplate += '<div class="edvisor-close"></div></div>';
 					}
 				
 				multiSelectTemplate	+= '</div><button type="button" class="edvisor-option-button">+ Add Option</button></div>';
@@ -236,7 +234,7 @@
 							if(php_vars[num3]['customPropertyValues'][cfId] && php_vars[num3]['customPropertyValues'][cfId]['options']){
 								var templateCustomOptions = '';
 								for(var i = 0; i < php_vars[num3]['customPropertyValues'][cfId]['options'].length; i++) {
-									templateCustomOptions += '<div class="edvisor-option"><input type="text" name="wp_edvisor['+num3+'][customPropertyValues]['+cfId+'][options][]" value="'+php_vars[num3]["customPropertyValues"][cfId]["options"][i]+'"><div class="edvisor-close"></div></div>'
+									templateCustomOptions += '<div class="edvisor-option"><input type="text" name="wp_edvisor['+num3+'][customPropertyValues]['+cfId+'][options]['+i+'][value]" value="'+php_vars[num3]["customPropertyValues"][cfId]["options"][i]["value"]+'"><input type="text" name="wp_edvisor['+num3+'][customPropertyValues]['+cfId+'][options]['+i+'][display]" value="'+php_vars[num3]["customPropertyValues"][cfId]["options"][i]["display"]+'"><div class="edvisor-close"></div></div>'
 								}
 								return templateCustomOptions;
 							} else {
@@ -244,13 +242,6 @@
 							}
 						})()
 					+ '</div><button type="button" class="edvisor-option-button">+ Add Option</button></div>'
-					+ '<div class="edvisor-item"><label class="edvisor-label">Required:</label><input type="checkbox" '
-					+ (function(){ 
-							if(php_vars[num3][type][cfId] && php_vars[num3][type][cfId]["required"]){
-								return "checked"
-							} 
-						})()
-					+ ' name="wp_edvisor['+num3+'][customPropertyValues]['+cfId+'][required]"></div>'
 					+ '<input type="submit" name="submit" id="submit" class="button button-primary" value="Save">'
 					+ '</div>')
 
@@ -260,17 +251,10 @@
 				}
 				
 			} else {
-				$(this).parents('.edvisor-item').find('.edvisor-edit-modal').append('<div class="edvisor-list_inner" name="'+type+'">'
+				$(this).parents('.edvisor-item').find('.edvisor-edit-modal .edvisor-modal_body').append('<div class="edvisor-list_inner" name="'+type+'">'
 					+ '<div class="edvisor-field"><label>Edvisor Field: '+php_vars[num3][type]["name"]+'</label></div>'
 					+ '<div class="edvisor-item"><label class="edvisor-label">Label:</label><input name="wp_edvisor['+num3+']['+type+'_label]" value="'+php_vars[num3][type]["label"]+'"></div>'
 					+ selectTemplate(type, num3)
-					+ '<div class="edvisor-item"><label class="edvisor-label">Required:</label><input type="checkbox" '
-					+ (function(){ 
-							if(php_vars[num3][type] && php_vars[num3][type]["required"]){ 
-								return "checked"
-							} 
-						})()
-					+ ' name="wp_edvisor['+num3+']['+type+'_required]"></div>'
 					+ '<input type="submit" name="submit" id="submit" class="button button-primary" value="Save">'
 					+ '</div>')
 
@@ -282,7 +266,7 @@
 
 			// Add edvisor autocomplete
 			if(type === 'studentLocationPreferences' || type === 'currentLocationGooglePlaceId') {
-				$('.edvisor-edit-modal').on('click', '.edvisor-option input', function(){
+				$('.edvisor-edit-modal').on('click', '.edvisor-google-input', function(){
 					$(this).autocomplete({
 				    source: function( request, response ) {
 				      jQuery.ajax({
@@ -332,14 +316,16 @@
 		$('.edvisor-edit-modal').on('click', '.edvisor-option-button', function() {
 			var type = $(this).parents('.edvisor-list_inner').attr('name');
 			var num = $(this).parents('.edvisor-item').attr('data-num');
-			// var num = $('.edvisor-option-button').parents('.edvisor-option-container').find('.edvisor-option').length
+			var numOptions = $(this).parents('.edvisor-list_inner').find('.edvisor-option').length;
 
 			if(type === 'customPropertyValues') {
 				var cfId = $(this).parents('.edvisor-list_inner').attr('cfId');
-				$('.edvisor-options').append('<div class="edvisor-option"><input type="text" name="wp_edvisor['+num+'][customPropertyValues]['+cfId+'][options][]"><div class="edvisor-close"></div></div>');
-			} else {
-				$('.edvisor-options').append('<div class="edvisor-option"><input type="text" name="wp_edvisor['+num+']['+type+'_options][]">'
-				+ (function(){ if(type === 'studentLocationPreferences' || type === 'currentLocationGooglePlaceId') { return '<input type="hidden" name="wp_edvisor['+num+']['+type+'_ids][]">' } else { return ''}})()
+				$('.edvisor-options').append('<div class="edvisor-option"><input type="text" name="wp_edvisor['+num+'][customPropertyValues]['+cfId+'][options]['+numOptions+'][value]" placeholder="value"><input type="text" name="wp_edvisor['+num+'][customPropertyValues]['+cfId+'][options]['+numOptions+'][display]" placeholder="Display"><div class="edvisor-close"></div></div>');
+			} else if(type === 'studentCoursePreferences' || type === 'studentSchoolPreferences') {
+				$('.edvisor-options').append('<div class="edvisor-option"><input type="text" name="wp_edvisor['+num+']['+type+'_options]['+numOptions+'][value]" placeholder="value"><input type="text" name="wp_edvisor['+num+']['+type+'_options]['+numOptions+'][display]" placeholder="display"><div class="edvisor-close"></div></div>');
+			} else if(type === 'studentLocationPreferences' || type === 'currentLocationGooglePlaceId') {
+				$('.edvisor-options').append('<div class="edvisor-option"><input type="text" class="edvisor-google-input" name="wp_edvisor['+num+']['+type+'_options][]">'
+				+ '<input type="hidden" name="wp_edvisor['+num+']['+type+'_ids][]">'
 				+ '<div class="edvisor-close"></div></div>');
 			}
 		});

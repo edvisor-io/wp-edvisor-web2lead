@@ -83,7 +83,7 @@
 }
 
 .col-2 {
-	width: 65%;
+	width: 50%;
 }
 
 .col-5 {
@@ -189,14 +189,14 @@ body.modal-open {
 
 .edvisor-modal {
 	display: none;
-	width: 300px;
+	width: 360px;
 	border: 1px solid lightgray;
 	border-radius: 2px;
 	padding: 20px;
 	background: #fff;
 	position: absolute;
 	left: 50%;
-	margin-left: -150px;
+	margin-left: -180px;
 	z-index: 2;
 }
 

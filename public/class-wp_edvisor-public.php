@@ -178,7 +178,7 @@ class Wp_edvisor_Public {
 						}
 					} else {
 						foreach($label['options'] as $option => $item) {
-							$markup = $markup . '<option value="'.$item.'">'.$item.'</option>';
+							$markup = $markup . '<option value="'.$item['value'].'">'.$item['display'].'</option>';
 						}
 					}
 					$markup = $markup . '</select>';
@@ -218,7 +218,7 @@ class Wp_edvisor_Public {
 					$markup = $markup . '>';
 					$markup = $markup . '<option value="" disabled selected hidden></option>';
 					foreach($label['options'] as $option => $item) {
-						$markup = $markup . '<option value="'.$item.'">'.$item.'</option>';
+						$markup = $markup . '<option value="'.$item['value'].'">'.$item['display'].'</option>';
 					}
 					$markup = $markup . '</select>';
 				} else if($label['type'] == "Date"){ 

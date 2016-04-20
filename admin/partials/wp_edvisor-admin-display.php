@@ -76,6 +76,7 @@
 										
 										<div class='edvisor-list'>
 											<div class='edvisor-list_header'>
+												<div class='col-1'>Required</div>
 												<div class='col-1'>Order</div>
 												<div class='col-2'>Field</div>
 												<div class='col-3'>Edit</div>
@@ -87,6 +88,7 @@
 													<?php if(is_array($unit) && array_key_exists('checkbox', $unit) && $unit['checkbox'] == 1): ?>
 														<div class='edvisor-list_item' name='<?php echo $item?>'>
 															<input type='hidden' name='<?php echo $this->plugin_name; ?>[<?php echo $num ?>][<?php echo $item ?>_checkbox]' value='1'>
+															<div class='col-1'><input type='checkbox' name="<?php echo $this->plugin_name; ?>[<?php echo $num ?>][<?php echo $item ?>_required]" <?php if(isset($unit['required']) && $unit['required']) echo 'checked' ?> ></div>
 															<div class='col-1'><input type='text' class='edvisor-list_order' name="<?php echo $this->plugin_name; ?>[<?php echo $num ?>][<?php echo $item ?>_order]" value="<?php echo $unit['order']?>"></div>
 															<div class='col-2'><span class='edvisor-list_field'><?php echo $unit['label']?></span></div>
 															<div class='col-3'><div class='edvisor-edit'></div></div>
@@ -98,6 +100,7 @@
 												<?php if ($options[$num]['customPropertyValues']) : ?>
 													<?php foreach($options[$num]['customPropertyValues'] as $item => $unit): ?>
 														<div class='edvisor-list_item' name='customPropertyValues' cfId='<?php echo $item ?>'>
+															<div class='col-1'><input type='checkbox' name="<?php echo $this->plugin_name; ?>[<?php echo $num; ?>][customPropertyValues][<?php echo $item ?>][required]" <?php if(isset($unit['required']) && $unit['required']) echo 'checked' ?> ></div>
 															<div class='col-1'><input type='text' class='edvisor-list_order' name="<?php echo $this->plugin_name; ?>[<?php echo $num; ?>][customPropertyValues][<?php echo $item ?>][order]" value="<?php echo $unit['order']?>"></div>
 															<div class='col-2'><span class='edvisor-list_field'><?php echo $unit['label']?></span></div>
 															<div class='col-3'><div class='edvisor-edit'></div></div>
@@ -257,7 +260,7 @@
 						<div class="inside">
 							<h2>Important</h2>
 							<p>Make sure add your Agency ID and API Key in the settings section.</p>
-							<p>Use the shortcode to add the form to your page: [edvisor_form]</p>
+							<p>Use the shortcode to add the form to your page: [edvisor_form name="Your-Form-Name"]</p>
 							<h2>Docs</h2>
 							<p>You can find our API at docs.edvisor.io</p>
 							<h2>Help</h2>

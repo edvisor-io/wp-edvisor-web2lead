@@ -56,11 +56,7 @@ function wp_edvisor_template($options, $input, $num) {
     if(!empty($input[$num][$fieldArr[$i].'_required'])){
       $valid[$fieldArr[$i]]['required'] = 1;
     } else {
-      if(isset($options[$num][$fieldArr[$i]]['required']) && $options[$num][$fieldArr[$i]]['required'] == 1) {
-        $valid[$fieldArr[$i]]['required'] = 1;
-      } else {
-        $valid[$fieldArr[$i]]['required'] = 0;
-      };
+      $valid[$fieldArr[$i]]['required'] = 0;
     };
 
     if(!empty($input[$num][$fieldArr[$i].'_label'])){
@@ -235,11 +231,7 @@ function wp_edvisor_template($options, $input, $num) {
       if(!empty($input[$num]['customPropertyValues'][$item]['required'])){
         $required = 1;
       } else {
-        if(isset($options[$num]['customPropertyValues'][$item]['required'])) {
-          $required = 1;
-        } else {
-          $required = 0;
-        };
+        $required = 0;
       };
 
       if(!empty($input[$num]['customPropertyValues'][$item]['options'])){
