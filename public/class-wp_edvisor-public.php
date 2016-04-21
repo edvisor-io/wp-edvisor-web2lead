@@ -199,6 +199,11 @@ class Wp_edvisor_Public {
 				$markup = $markup . $edvisorData($field, $label, 'text');
 				$markup = $markup . '>';
 				$markup = $markup . '<option value="" disabled selected hidden></option>';
+				if(isset($label['type']) && $label['type'] == 'Custom' && count($label['options']) > 0){
+					foreach($label['options'] as $num => $item) {
+						$markup = $markup . '<option value="'.$item['value'].'">'. $item['display'] .'</option>';
+					};
+				};
 				$markup = $markup . '</select>';
 			};
 

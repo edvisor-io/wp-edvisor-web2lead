@@ -159,6 +159,36 @@
 				}
 				return selectTemplate2;
 
+			} else if(type === 'durationWeekAmount' || type === 'startMonth' || type === 'startYear') {
+				var autoTemplate = "";
+				autoTemplate += '<div class="edvisor-item"><label class="edvisor-label">Type:</label>'
+					+ '<select class="typeSelect" name="wp_edvisor['+num+']['+type+'_type]">'
+					+ '<option '+isSelected(type, "Default", num)+'>Default</option>'
+					+ '<option '+isSelected(type, "Custom", num)+'>Custom</option>'
+					+	'</select></div>';
+
+				autoTemplate += '<div class="edvisor-option-container"><label>Options:</label><br/><div class="edvisor-options">';
+				var optionsNum = php_vars[num][type]['options'] ? php_vars[num][type]['options'].length : false;
+				if(optionsNum) {
+					for(var i = 0; i < optionsNum; i++){
+						autoTemplate += '<div class="edvisor-option">'
+						autoTemplate += '<input type="text" name="wp_edvisor['+num+']['+type+'_options]['+i+'][value]" value="'+php_vars[num][type]["options"][i]["value"]+'"'
+						if(type === 'durationWeekAmount') {
+							autoTemplate += ' placeholder="Numbers 1-208 only"'
+						} else if (type === 'startMonth') {
+							autoTemplate += ' placeholder="Numbers 1-12 only"'
+						} else if (type === 'startYear') {
+							autoTemplate += ' placeholder="Future years only"'
+						}
+						autoTemplate += '>'
+						autoTemplate += '<input type="text" name="wp_edvisor['+num+']['+type+'_options]['+i+'][display]" value="'+php_vars[num][type]["options"][i]["display"]+'" placeholder="Display">'
+						autoTemplate += '<div class="edvisor-close"></div></div>';
+					}
+				}
+				autoTemplate += '</div><button type="button" class="edvisor-option-button">+ Add Option</button></div>';
+
+				return autoTemplate
+
 			} else if(type === 'studentCoursePreferences' || type === 'studentSchoolPreferences' || type === 'studentLocationPreferences' || type === 'currentLocationGooglePlaceId') {
 				var multiSelectTemplate = "";
 
@@ -259,8 +289,10 @@
 					+ '</div>')
 
 				// If type is dropdown
-				if(php_vars[num3][type]['type'] && php_vars[num3][type]['type']==="Dropdown") {
-					$(this).parents('.edvisor-item').find('.edvisor-option-container').css('display','block')
+				if(php_vars[num3][type]['type']) {
+					if(php_vars[num3][type]['type']==="Dropdown" || php_vars[num3][type]['type']==="Custom") {
+						$(this).parents('.edvisor-item').find('.edvisor-option-container').css('display','block')
+					}
 				}
 			}
 
@@ -327,12 +359,27 @@
 				$('.edvisor-options').append('<div class="edvisor-option"><input type="text" class="edvisor-google-input" name="wp_edvisor['+num+']['+type+'_options][]">'
 				+ '<input type="hidden" name="wp_edvisor['+num+']['+type+'_ids][]">'
 				+ '<div class="edvisor-close"></div></div>');
+			} else if(type === 'durationWeekAmount' || type === 'startMonth' || type === 'startYear') {
+				var optionTemplate = '';
+				optionTemplate += '<div class="edvisor-option">';
+				optionTemplate += '<input type="text" name="wp_edvisor['+num+']['+type+'_options]['+numOptions+'][value]"'
+				if(type === 'durationWeekAmount') {
+					optionTemplate += ' placeholder="Numbers 1-208 only"'
+				} else if(type === 'startMonth') {
+					optionTemplate += ' placeholder="Numbers 1-12 only"'
+				} else if(type === 'startYear') {
+					optionTemplate += ' placeholder="Future Years only"'
+				}
+				optionTemplate += '>'
+				optionTemplate += '<input type="text" name="wp_edvisor['+num+']['+type+'_options]['+numOptions+'][display]" placeholder="Display">'
+				optionTemplate += '<div class="edvisor-close"></div></div>'
+				$('.edvisor-options').append(optionTemplate);
 			}
 		});
 
 		// Watching for type select change
 		$('.edvisor-edit-modal').on('change', '.typeSelect', function() {
-			if($(this).val()==='Dropdown' || $(this).val()==='Dropdown to Text') {
+			if($(this).val()==='Dropdown' || $(this).val()==='Dropdown to Text' || $(this).val()==='Custom') {
 				$('.edvisor-option-container').css('display', 'block');
 			} else {
 				$('.edvisor-option-container').css('display', 'none');

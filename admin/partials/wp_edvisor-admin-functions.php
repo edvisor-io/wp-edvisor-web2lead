@@ -76,6 +76,30 @@ function wp_edvisor_template($options, $input, $num) {
   $valid['firstname']['required'] = 1;
   $valid['firstname']['checkbox'] = 1;
   
+  $predefinedDropdownArr = array('durationWeekAmount', 'startMonth', 'startYear');
+
+  for ($i = 0; $i < count($predefinedDropdownArr); $i++) {
+    if(!empty($input[$num][$predefinedDropdownArr[$i].'_type'])){
+      $valid[$predefinedDropdownArr[$i]]['type'] = $input[$num][$predefinedDropdownArr[$i].'_type'];
+    } else {
+      if(isset($options[$num][$predefinedDropdownArr[$i]]['type'])) {
+        $valid[$predefinedDropdownArr[$i]]['type'] = $options[$num][$predefinedDropdownArr[$i]]['type'];
+      } else {
+        $valid[$predefinedDropdownArr[$i]]['type'] = 'Default';
+      }
+    };
+
+    if(!empty($input[$num][$predefinedDropdownArr[$i].'_options'])){
+      $valid[$predefinedDropdownArr[$i]]['options'] = $input[$num][$predefinedDropdownArr[$i].'_options'];
+    } else {
+      if(isset($options[$num][$predefinedDropdownArr[$i]]['options'])) {
+        $valid[$predefinedDropdownArr[$i]]['options'] = $options[$num][$predefinedDropdownArr[$i]]['options'];
+      } else {
+        $valid[$predefinedDropdownArr[$i]]['options'] = "";
+      };
+    };
+  }
+
 
   /* Gender */
   $valid['gender']['option']['M'] = (isset($input[$num]['M']) && !empty($input[$num]['M'])) ? sanitize_text_field($input[$num]['M']) : 'Male';
