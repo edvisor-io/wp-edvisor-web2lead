@@ -18,6 +18,7 @@ function wp_edvisor_template($options, $input, $num) {
   $valid['studentLocationPreferences']['name'] = 'Destinations';
   $valid['studentSchoolPreferences']['name'] = 'Schools';
   $valid['studentCoursePreferences']['name'] = 'Programs/Courses';
+  $valid['studentCurrentPipelineStages']['name'] = 'Pipelines';
   $valid['startDay']['name'] = 'Start Day';
   $valid['startMonth']['name'] = 'Start Month';
   $valid['startYear']['name'] = 'Start Year';
@@ -39,14 +40,14 @@ function wp_edvisor_template($options, $input, $num) {
       add_settings_error( 'API Key','2','Please Enter an API Key' );
     }
 
-  $valid['formName'] = (isset($input[$num]['formName']) && !empty($input[$num]['formName'])) ? sanitize_text_field($input[$num]['formName']) : '';
+  $valid['formName'] = (isset($input[$num]['formName']) && !empty($input[$num]['formName'])) ? sanitize_text_field($input[$num]['formName']) : 'form'.time();
     if (empty($input[$num]['formName'])) {
       add_settings_error( 'Form Name','3','Please Enter a Form Name' );
     }
 
   $fieldArr = array(
     'firstname', 'lastname', 'email', 'phone', 'gender', 'birthdate', 'address', 'currentLocationGooglePlaceId', 'postalCode', 'nationalityId',
-    'passportNumber', 'studentLocationPreferences', 'studentSchoolPreferences', 'studentCoursePreferences', 'startDay', 'startMonth', 'startYear',
+    'passportNumber', 'studentLocationPreferences', 'studentSchoolPreferences', 'studentCoursePreferences', 'studentCurrentPipelineStages', 'startDay', 'startMonth', 'startYear',
     'durationWeekAmount', 'accommodation', 'hoursPerWeek', 'amOrPm', 'budget', 'notes'
   );
 
@@ -210,6 +211,27 @@ function wp_edvisor_template($options, $input, $num) {
       $valid['studentCoursePreferences']['options'] = $options[$num]['studentCoursePreferences']['options'];
     } else {
       $valid['studentCoursePreferences']['options'] = "";
+    };
+  };
+
+  /* Pipelines */
+  if(!empty($input[$num]['studentCurrentPipelineStages_type'])){
+    $valid['studentCurrentPipelineStages']['type'] = sanitize_text_field($input[$num]['studentCurrentPipelineStages_type']);
+  } else {
+    if(isset($options[$num]['studentCurrentPipelineStages']['type'])) {
+      $valid['studentCurrentPipelineStages']['type'] = $options[$num]['studentCurrentPipelineStages']['type'];
+    } else {
+      $valid['studentCurrentPipelineStages']['type'] = '';
+    }
+  };
+
+  if(!empty($input[$num]['studentCurrentPipelineStages_options'])){
+    $valid['studentCurrentPipelineStages']['options'] = $input[$num]['studentCurrentPipelineStages_options'];
+  } else {
+    if(isset($options[$num]['studentCurrentPipelineStages']['options'])) {
+      $valid['studentCurrentPipelineStages']['options'] = $options[$num]['studentCurrentPipelineStages']['options'];
+    } else {
+      $valid['studentCurrentPipelineStages']['options'] = "";
     };
   };
   

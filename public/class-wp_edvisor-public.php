@@ -107,7 +107,7 @@ class Wp_edvisor_Public {
 		$textAreas = array("notes");
 		$selectFields = array("startDay", "startMonth", "startYear", "durationWeekAmount", "nationalityId");
 		$wasRadioFields = array("gender", "amOrPm");
-		$addOwnFields = array("currentLocationGooglePlaceId", "studentSchoolPreferences", "studentCoursePreferences", "studentLocationPreferences");
+		$addOwnFields = array("currentLocationGooglePlaceId", "studentSchoolPreferences", "studentCoursePreferences", "studentLocationPreferences", "studentCurrentPipelineStages");
 		$tagFields = array("currentLocationGooglePlaceId", "studentLocationPreferences");
 
 		$markup = '';

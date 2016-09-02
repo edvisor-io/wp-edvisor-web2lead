@@ -62,7 +62,7 @@
           (function() {
             return (new Function( 'return (' + formValues[keys[x]].js + ')' )());
           }());
-        };
+        }
 
         $('input[data-edvisor*=type-google]').autocomplete({
           source: function( request, response ) {

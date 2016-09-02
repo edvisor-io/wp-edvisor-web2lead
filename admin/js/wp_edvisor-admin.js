@@ -189,7 +189,7 @@
 
 				return autoTemplate
 
-			} else if(type === 'studentCoursePreferences' || type === 'studentSchoolPreferences' || type === 'studentLocationPreferences' || type === 'currentLocationGooglePlaceId') {
+			} else if(type === 'studentCoursePreferences' || type === 'studentSchoolPreferences' || type === 'studentLocationPreferences' || type === 'currentLocationGooglePlaceId' || type === 'studentCurrentPipelineStages') {
 				var multiSelectTemplate = "";
 
 				multiSelectTemplate += '<div class="edvisor-item"><label class="edvisor-label">Type:</label>'
@@ -208,7 +208,7 @@
 							if(type === 'studentLocationPreferences' || type === 'currentLocationGooglePlaceId') {
 								multiSelectTemplate += '<div class="edvisor-option"><input class="edvisor-google-input" type="text" name="wp_edvisor['+num+']['+type+'_options][]" value="'+php_vars[num][type]["options"][i]+'">';
 								multiSelectTemplate += '<input type="hidden" name="wp_edvisor['+num+']['+type+'_ids]['+i+']" value="'+php_vars[num][type]["ids"][i]+'">'
-							} else if(type === 'studentCoursePreferences' || type === 'studentSchoolPreferences') {
+							} else if(type === 'studentCoursePreferences' || type === 'studentSchoolPreferences' || type ==='studentCurrentPipelineStages') {
 								multiSelectTemplate += '<div class="edvisor-option"><input type="text" name="wp_edvisor['+num+']['+type+'_options]['+i+'][value]" value="'+php_vars[num][type]["options"][i]["value"]+'"><input type="text" name="wp_edvisor['+num+']['+type+'_options]['+i+'][display]" value="'+php_vars[num][type]["options"][i]["display"]+'">';
 							}
 							multiSelectTemplate += '<div class="edvisor-close"></div></div>';
@@ -353,7 +353,7 @@
 			if(type === 'customPropertyValues') {
 				var cfId = $(this).parents('.edvisor-list_inner').attr('cfId');
 				$('.edvisor-options').append('<div class="edvisor-option"><input type="text" name="wp_edvisor['+num+'][customPropertyValues]['+cfId+'][options]['+numOptions+'][value]" placeholder="value"><input type="text" name="wp_edvisor['+num+'][customPropertyValues]['+cfId+'][options]['+numOptions+'][display]" placeholder="Display"><div class="edvisor-close"></div></div>');
-			} else if(type === 'studentCoursePreferences' || type === 'studentSchoolPreferences') {
+			} else if(type === 'studentCoursePreferences' || type === 'studentSchoolPreferences' || type === 'studentCurrentPipelineStages') {
 				$('.edvisor-options').append('<div class="edvisor-option"><input type="text" name="wp_edvisor['+num+']['+type+'_options]['+numOptions+'][value]" placeholder="value"><input type="text" name="wp_edvisor['+num+']['+type+'_options]['+numOptions+'][display]" placeholder="display"><div class="edvisor-close"></div></div>');
 			} else if(type === 'studentLocationPreferences' || type === 'currentLocationGooglePlaceId') {
 				$('.edvisor-options').append('<div class="edvisor-option"><input type="text" class="edvisor-google-input" name="wp_edvisor['+num+']['+type+'_options][]">'
