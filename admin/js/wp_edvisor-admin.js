@@ -196,7 +196,16 @@
 					+ '<select class="typeSelect" name="wp_edvisor['+num+']['+type+'_type]">'
 					+ '<option '+isSelected(type, "Text", num)+'>Text</option>'
 					+ '<option '+isSelected(type, "Dropdown", num)+'>Dropdown</option>'
+				 	+ (function(){ if(type === 'studentCurrentPipelineStages'){return '<option '+isSelected(type, "Hidden", num)+'>Hidden</option>'} })()
 					+	'</select></div>';
+
+				
+				// hidden field
+				if(type === 'studentCurrentPipelineStages') {
+					multiSelectTemplate += '<div class="edvisor-item edvisor-option-hidden"><label class="edvisor-label">Value:</label><input class="hidden-type" name="wp_edvisor['+num+']['+type+'_hidden]" value="'
+						+ (function(){if(php_vars[num][type]["hidden"]){return php_vars[num][type]["hidden"]} else { return ""}})()
+						+ '"/></div>'
+				}
 
 				multiSelectTemplate += '<div class="edvisor-option-container"><label>Options:</label><br/>'
 					+ '<div class="edvisor-options">';
@@ -288,12 +297,15 @@
 					+ '<input type="submit" name="submit" id="submit" class="button button-primary" value="Save">'
 					+ '</div>')
 
-				// If type is dropdown
+				// If type is dropdown or hidden
 				if(php_vars[num3][type]['type']) {
 					if(php_vars[num3][type]['type']==="Dropdown" || php_vars[num3][type]['type']==="Custom") {
 						$(this).parents('.edvisor-item').find('.edvisor-option-container').css('display','block')
+					} else if (php_vars[num3][type]['type']==="Hidden") {
+						$(this).parents('.edvisor-item').find('.edvisor-option-hidden').css('display','block')
 					}
 				}
+
 			}
 
 			// Add edvisor autocomplete
@@ -381,8 +393,13 @@
 		$('.edvisor-edit-modal').on('change', '.typeSelect', function() {
 			if($(this).val()==='Dropdown' || $(this).val()==='Dropdown to Text' || $(this).val()==='Custom') {
 				$('.edvisor-option-container').css('display', 'block');
+				$('.edvisor-option-hidden').css('display', 'none');
+			} else if($(this).val()==='Hidden') {
+				$('.edvisor-option-container').css('display', 'none');
+				$('.edvisor-option-hidden').css('display', 'block');
 			} else {
 				$('.edvisor-option-container').css('display', 'none');
+				$('.edvisor-option-hidden').css('display', 'none');
 			}
 		});
 

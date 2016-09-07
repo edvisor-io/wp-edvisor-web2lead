@@ -144,3 +144,7 @@
   padding: 20px;
   text-align: center;
 }
+
+.edvisor-hidden {
+  display: none;
+}

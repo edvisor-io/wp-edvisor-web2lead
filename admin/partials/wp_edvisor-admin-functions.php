@@ -234,6 +234,16 @@ function wp_edvisor_template($options, $input, $num) {
       $valid['studentCurrentPipelineStages']['options'] = "";
     };
   };
+
+  if(!empty($input[$num]['studentCurrentPipelineStages_hidden'])){
+    $valid['studentCurrentPipelineStages']['hidden'] = sanitize_text_field($input[$num]['studentCurrentPipelineStages_hidden']);
+  } else {
+    if(isset($options[$num]['studentCurrentPipelineStages']['hidden'])) {
+      $valid['studentCurrentPipelineStages']['hidden'] = $options[$num]['studentCurrentPipelineStages']['hidden'];
+    } else {
+      $valid['studentCurrentPipelineStages']['hidden'] = '';
+    }
+  };
   
   /* AM or PM */
   $valid['amOrPm']['option']['am'] = (isset($input[$num]['amOrPm_option_am']) && !empty($input[$num]['amOrPm_option_am'])) ? sanitize_text_field($input[$num]['amOrPm_option_am']) : 'AM';

@@ -116,7 +116,11 @@ class Wp_edvisor_Public {
 		$markup = $markup . '<form class="edvisor-form" id="' . $name . '">';
 
 		foreach($chosen as $field => $label){
-			$markup = $markup . '<div class="edvisor-row">';
+			$markup = $markup . '<div class="edvisor-row';
+			if($label['type'] == "Hidden") {
+				$markup = $markup . ' edvisor-hidden';
+			};
+			$markup = $markup . '">';
 			$markup = $markup . '<label>' . $label['label'] . '</label>';
 
 			// If its a regular text field
@@ -182,6 +186,11 @@ class Wp_edvisor_Public {
 						}
 					}
 					$markup = $markup . '</select>';
+				} else if($label['type'] == "Hidden") {
+					$markup = $markup . '<input type="hidden"';
+					$markup = $markup . 'value="' . $label['hidden'] . '"';
+					$markup = $markup . $edvisorData($field, $label, 'tag');
+					$markup = $markup . '>';
 				};
 			};
 

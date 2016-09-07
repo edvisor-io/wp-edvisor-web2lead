@@ -225,7 +225,8 @@ body.modal-open {
 	cursor: pointer;
 }
 
-.edvisor-option-container {
+.edvisor-option-container,
+.edvisor-option-hidden {
 	display: none;
 }
 
