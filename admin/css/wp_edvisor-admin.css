@@ -10,8 +10,8 @@
 	box-shadow: none;
 }
 
-.edvisor-tab-form,
-.edvisor-tab-custom {
+#edvisor-tab-form,
+#edvisor-tab-custom {
 	display: none;
 }
 
@@ -23,41 +23,11 @@
 	margin-top: 30px !important;
 }
 
-.edvisor-block {
-	background: #fff;
-	padding: 20px;
-	font-size: 14px;
-}
-
-.edvisor-block span {
-	margin-right: 20px;
-}
-
-.edvisor-block .edvisor-edit,
-.edvisor-block .edvisor-close {
-	float: right;
-}
-
-.edvisor-form-item {
-	display: none;
-}
-
-.edvisor-close-form {
-	float: right;
-}
-
 
 /* FORM LIST */
 
 .edvisor-list {
 	background: #fff;
-}
-
-.edvisor-list_select {
-	color: gray;
-	display: table;
-	font-weight: bold;
-	width: 100%;
 }
 
 .edvisor-list_header {
@@ -72,9 +42,7 @@
 .col-1,
 .col-2,
 .col-3,
-.col-4,
-.col-5,
-.col-6 {
+.col-4 {
 	display: table-cell;
 }
 
@@ -83,15 +51,7 @@
 }
 
 .col-2 {
-	width: 50%;
-}
-
-.col-5 {
-	width: 40%;
-}
-
-.col-6 {
-	width: 40%;
+	width: 65%;
 }
 
 .col-3 {
@@ -184,20 +144,18 @@ body.modal-open {
 	opacity: .2;
 	top: 0;
 	left: -10px;
-	z-index: 1;
 }
 
 .edvisor-modal {
 	display: none;
-	width: 360px;
+	width: 300px;
 	border: 1px solid lightgray;
 	border-radius: 2px;
 	padding: 20px;
 	background: #fff;
 	position: absolute;
 	left: 50%;
-	margin-left: -180px;
-	z-index: 2;
+	margin-left: -150px;
 }
 
 .edvisor-modal .button {
@@ -225,8 +183,7 @@ body.modal-open {
 	cursor: pointer;
 }
 
-.edvisor-option-container,
-.edvisor-option-hidden {
+.edvisor-option-container {
 	display: none;
 }
 
@@ -253,18 +210,17 @@ body.modal-open {
 }
 
 .edvisor-item {
-	margin-bottom: 25px;
-  border-bottom: 1px solid #DADADA;
-	padding-bottom: 25px;
+	margin-bottom: 10px;
 }
 
 
 /* SETTINGS */
+
 .edvisor-info {
 	color: gray;
 }
 
-.edvisor-tab-settings fieldset {
+#edvisor-tab-settings fieldset {
 	margin-bottom: 15px;
 }
 
@@ -272,18 +228,7 @@ body.modal-open {
   margin-bottom: 5px;
 }
 
-.edvisor-tab-custom textarea {
+#edvisor-tab-custom textarea {
 	width: 100%;
 	height: 120px;
-	display: none;
-	margin-bottom: 20px;
-}
-
-.edvisor-tab-custom button {
-	margin: 10px 0;
-}
-
-.col-3 p {
-	margin: 0;
-	padding: 0;
 }

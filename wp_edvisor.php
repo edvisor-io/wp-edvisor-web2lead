@@ -16,7 +16,7 @@
  * Plugin Name:       Edvisor Forms
  * Plugin URI:        edvisor.io
  * Description:       Edvisor Forms for Wordpress
- * Version:           1.4.0
+ * Version:           1.0.0
  * Author:            Clarence
  * Author URI:        edvisor.io
  * License:           GPL-2.0+

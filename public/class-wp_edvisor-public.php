@@ -56,36 +56,24 @@ class Wp_edvisor_Public {
 
 	}
 
-	public function wp_edvisor_add_shortcode($atts) {
+	public function wp_edvisor_add_shortcode() {
 		// var_dump($this->wp_edvisor_options);
 
-		foreach($this->wp_edvisor_options as $num => $itemArr) {
-			if(is_numeric($num) && isset($itemArr['formName'])) {
-				if($itemArr['formName'] == $atts['name']) {
-					$selectedFormData = $itemArr;
-				};
-			};
-		};
+		
+		// Filtering array by items selected
+		$filtered = array_filter($this->wp_edvisor_options, function($items) {
+			return !empty($items['checkbox']);
+		});
 
+		$chosen = !empty($this->wp_edvisor_options['customPropertyValues']) ? array_merge($filtered, $this->wp_edvisor_options['customPropertyValues']) : $filtered;
 
-		if(isset($selectedFormData)) {
-			$filtered = array_filter($selectedFormData, function($items) {
-				return !empty($items['checkbox']);
-			});
-		} else {
-			var_dump('There is an error with your shortcode');
-			exit();
-		}
-
-
-		$chosen = !empty($selectedFormData['customPropertyValues']) ? array_merge($filtered, $selectedFormData['customPropertyValues']) : $filtered;
 		
 		// Sort array by order
-		$sortByOrder = function($a, $b) {
+		function sortByOrder($a, $b) {
 			return $a['order'] - $b['order'];
-		};
+		}
 
-		$edvisorData = function($field, $label, $type, $other='') {
+		function edvisorData($field, $label, $type, $other='') {
 			$markup = ' ';
 			$markup = $markup . 'data-edvisor="id-'.$field.' type-'.$type;
 			if(!empty($label['required'])) {
@@ -98,7 +86,7 @@ class Wp_edvisor_Public {
 			return $markup;
 		};
 
-		uasort($chosen, $sortByOrder);
+		uasort($chosen, 'sortByOrder');
 
 
 		// var_dump($chosen);
@@ -107,25 +95,18 @@ class Wp_edvisor_Public {
 		$textAreas = array("notes");
 		$selectFields = array("startDay", "startMonth", "startYear", "durationWeekAmount", "nationalityId");
 		$wasRadioFields = array("gender", "amOrPm");
-		$addOwnFields = array("currentLocationGooglePlaceId", "studentSchoolPreferences", "studentCoursePreferences", "studentLocationPreferences", "studentCurrentPipelineStages");
+		$addOwnFields = array("currentLocationGooglePlaceId", "studentSchoolPreferences", "studentCoursePreferences", "studentLocationPreferences");
 		$tagFields = array("currentLocationGooglePlaceId", "studentLocationPreferences");
 
-		$markup = '';
-		$markup = $markup . '<style>' . $selectedFormData['css'] . '</style>';
-		$name = str_replace(' ', '', $selectedFormData['formName']);
-		$markup = $markup . '<form class="edvisor-form" id="' . $name . '">';
+		$markup = '<form class="edvisor-form">';
 
 		foreach($chosen as $field => $label){
-			$markup = $markup . '<div class="edvisor-row';
-			if($label['type'] == "Hidden") {
-				$markup = $markup . ' edvisor-hidden';
-			};
-			$markup = $markup . '">';
+			$markup = $markup . '<div class="edvisor-row">';
 			$markup = $markup . '<label>' . $label['label'] . '</label>';
 
 			// If its a regular text field
 			if(in_array($field, $textFields, true)){	
-				$markup = $markup . '<input type="text" ';
+				$markup = $markup . '<input type="text"';
 				$markup = $markup . 'data-edvisor="id-'.$field.' type-text';
 				if(!empty($label['required'])) {
 					$markup = $markup . ' validation-required';
@@ -140,14 +121,14 @@ class Wp_edvisor_Public {
 			// If its a text area
 			if(in_array($field, $textAreas, true)){	
 				$markup = $markup . '<textarea ';
-				$markup = $markup . $edvisorData($field, $label, 'text');
+				$markup = $markup . edvisorData($field, $label, 'text');
 				$markup = $markup . '></textarea>';
 			};
 
 			// If its was a radio now select
 			if(in_array($field, $wasRadioFields, true)){
 				$markup = $markup . '<select';
-				$markup = $markup . $edvisorData($field, $label, 'text');
+				$markup = $markup . edvisorData($field, $label, 'text');
 				$markup = $markup . '>';
 				$markup = $markup . '<option value="" disabled selected hidden></option>';
 				foreach($label['option'] as $option => $item) {
@@ -158,20 +139,21 @@ class Wp_edvisor_Public {
 
 			// If its a select
 			if(in_array($field, $addOwnFields, true)){
+
 				if($label['type'] == "Text") {
 					$markup = $markup . '<input type="text"';
 					if(in_array($field, $tagFields, true)) {
-						$markup = $markup . $edvisorData($field, $label, 'google');
+						$markup = $markup . edvisorData($field, $label, 'google');
 					} else {
-						$markup = $markup . $edvisorData($field, $label, 'tag');
+						$markup = $markup . edvisorData($field, $label, 'tag');
 					};
 					$markup = $markup . '/>';
 				} else if($label['type'] == "Dropdown") {
 					$markup = $markup . '<select';
 					if(in_array($field, $tagFields, true)) {
-						$markup = $markup . $edvisorData($field, $label, 'google');
+						$markup = $markup . edvisorData($field, $label, 'google');
 					} else {
-						$markup = $markup . $edvisorData($field, $label, 'tag');
+						$markup = $markup . edvisorData($field, $label, 'tag');
 					};
 					$markup = $markup . '>';
 					$markup = $markup . '<option value="" disabled selected hidden></option>';
@@ -182,22 +164,17 @@ class Wp_edvisor_Public {
 						}
 					} else {
 						foreach($label['options'] as $option => $item) {
-							$markup = $markup . '<option value="'.$item['value'].'">'.$item['display'].'</option>';
+							$markup = $markup . '<option value="'.$item.'">'.$item.'</option>';
 						}
 					}
 					$markup = $markup . '</select>';
-				} else if($label['type'] == "Hidden") {
-					$markup = $markup . '<input type="hidden"';
-					$markup = $markup . 'value="' . $label['hidden'] . '"';
-					$markup = $markup . $edvisorData($field, $label, 'tag');
-					$markup = $markup . '>';
 				};
 			};
 
 			// If its a date field
 			if(in_array($field, array("birthdate"), true)){
 				$markup = $markup . '<input type="text"';
-				$markup = $markup . $edvisorData($field, $label, 'text', 'calendar');
+				$markup = $markup . edvisorData($field, $label, 'text', 'calendar');
 				$markup = $markup . '"';
 				$markup = $markup . '/>';
 			};
@@ -205,14 +182,9 @@ class Wp_edvisor_Public {
 			// If its a prepopulated select field
 			if(in_array($field, $selectFields, true)) {
 				$markup = $markup . '<select';
-				$markup = $markup . $edvisorData($field, $label, 'text');
+				$markup = $markup . edvisorData($field, $label, 'text');
 				$markup = $markup . '>';
 				$markup = $markup . '<option value="" disabled selected hidden></option>';
-				if(isset($label['type']) && $label['type'] == 'Custom' && count($label['options']) > 0){
-					foreach($label['options'] as $num => $item) {
-						$markup = $markup . '<option value="'.$item['value'].'">'. $item['display'] .'</option>';
-					};
-				};
 				$markup = $markup . '</select>';
 			};
 
@@ -220,24 +192,20 @@ class Wp_edvisor_Public {
 			if(is_numeric($field)){
 				if($label['type'] == "Text") {
 					$markup = $markup . '<input type="text"';
-					$markup = $markup . $edvisorData($label['id'], $label, 'custom');
+					$markup = $markup . edvisorData($label['id'], $label, 'custom');
 					$markup = $markup . '/>';
-				} else if($label['type'] == "Dropdown" || $label['type'] == "Dropdown to Text"){
+				} else if($label['type'] == "Dropdown"){
 					$markup = $markup . '<select';
-					if($label['type'] == "Dropdown") {
-						$markup = $markup . $edvisorData($label['id'], $label, 'custom');
-					} else {
-						$markup = $markup . $edvisorData($label['id'], $label, 'custom-text');
-					}
+					$markup = $markup . edvisorData($label['id'], $label, 'custom');
 					$markup = $markup . '>';
 					$markup = $markup . '<option value="" disabled selected hidden></option>';
 					foreach($label['options'] as $option => $item) {
-						$markup = $markup . '<option value="'.$item['value'].'">'.$item['display'].'</option>';
+						$markup = $markup . '<option value="'.$item.'">'.$item.'</option>';
 					}
 					$markup = $markup . '</select>';
 				} else if($label['type'] == "Date"){ 
 					$markup = $markup . '<input type="text"';
-					$markup = $markup . $edvisorData($label['id'], $label, 'custom', 'calendar');
+					$markup = $markup . edvisorData($label['id'], $label, 'custom', 'calendar');
 					$markup = $markup . '"';
 					$markup = $markup . '/>';
 				};
@@ -247,7 +215,7 @@ class Wp_edvisor_Public {
 			$markup = $markup . '</div>';
 		};
 		
-		$markup = $markup . '<button type="submit" class="edvisor-button">' . $selectedFormData["submit"] . '</button></form>';
+		$markup = $markup . '<button type="submit" class="edvisor-button">' . $this->wp_edvisor_options["submit"] . '</button></form>';
 
 		return $markup;
 	}
@@ -277,7 +245,7 @@ class Wp_edvisor_Public {
 		 */
 
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/wp_edvisor-public.css', array(), $this->version, 'all' );
-		// wp_add_inline_style($this->plugin_name, $this->wp_edvisor_options['css']);
+		wp_add_inline_style($this->plugin_name, $this->wp_edvisor_options['css']);
 	}
 
 	/**
@@ -302,10 +270,8 @@ class Wp_edvisor_Public {
     wp_register_script('edvisorjs', 'https://dxfy15tq6smtz.cloudfront.net/edvisor.js', false, '1.3.2');
     wp_enqueue_script('edvisorjs');
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/wp_edvisor-public.js', array( 'jquery', 'jquery-ui-autocomplete', 'jquery-ui-datepicker'), $this->version, false );
-
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/wp_edvisor-public.js', array( 'jquery', 'jquery-ui-autocomplete', 'jquery-ui-datepicker' ), $this->version, false );
 		wp_localize_script( $this->plugin_name, 'formValues' , get_option($this->plugin_name) );
-		
 	}
 
 }
